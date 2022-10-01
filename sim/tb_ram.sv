@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module tb_mem_rf();
+module tb_ram();
 
   reg clk = 0;
   reg rst = 0;
