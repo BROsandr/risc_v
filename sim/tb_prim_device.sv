@@ -38,7 +38,7 @@ module tb_prim_device();
       $display( "primitive device test" );
       @( posedge clk );
       @( posedge clk );
-      
+      #200
       $display( "result = %d", result );
     end
 

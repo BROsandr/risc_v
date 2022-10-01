@@ -8,5 +8,5 @@ module RAM(
   assign RD_o = { RAM[A_i + 3], RAM[A_i + 2], RAM[A_i + 1], RAM[A_i] };
   
   initial
-    $readmemb( "ram.mem", RAM );
+    $readmemb( "ram.txt", RAM );
 endmodule

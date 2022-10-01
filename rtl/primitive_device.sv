@@ -17,9 +17,9 @@ module primitive_device(
   assign HEX_o = RD1;
   
   wire [31:0] const_SE;
-  assign const_SE = { {24{ RD[7] }}, RD[7:0] };
+  assign const_SE = { {24{ RD[12] }}, RD[12:5] };
   
-  reg [8:0] PC;
+  reg signed [8:0] PC;
   
   wire [8:0] add_to_PC;
   assign add_to_PC = ( ( Flag & RD[30] ) | RD[31]  ) ? ( const_SE ) : ( 4 );
@@ -48,10 +48,10 @@ module primitive_device(
   assign A2 = RD[17:13];
   
   wire [4:0] WA3;
-  assign WA3 = RD[12:8];
+  assign WA3 = RD[4:0];
   
   wire       WE3;
-  assign WE3 = RD[29];
+  assign WE3 = RD[29] | RD[28];
 
   RF rf(
     .clk_i( clk_i ),
@@ -66,7 +66,7 @@ module primitive_device(
   );
 
   wire [4:0] ALUOp;
-  assign ALUOp = { 1'b0, RD[26:23] };
+  assign ALUOp = RD[27:23];
 
   ALU_RISCV alu(
     .ALUOp ( ALUOp ),
