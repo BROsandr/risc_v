@@ -2,7 +2,7 @@
 
 `include "../common/constants.vh"
 
-module tb();
+module tb_alu();
   reg         [4:0]  ALUOp;
   reg         [31:0] A;
   reg         [31:0] B;

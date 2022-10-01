@@ -14,7 +14,7 @@ module RF(
   input         WE3_i
 );
 
-  reg [31:0] registers [1:31];
+  reg [31:0] registers [0:31];
   
   assign RD1_o = ( A1_i ) ? ( registers[A1_i] ) : ( 0 );
   assign RD2_o = ( A2_i ) ? ( registers[A2_i] ) : ( 0 );
