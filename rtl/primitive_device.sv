@@ -21,12 +21,16 @@ module primitive_device(
   
   reg [8:0] PC;
   
+  wire [8:0] add_to_PC;
+  assign add_to_PC = ( ( Flag & RD[30] ) | RD[31]  ) ? ( const_SE ) : ( 4 );
+  
   always @( posedge clk_i or posedge rst_i )
     if( rst_i )
       PC <= 0;
     else
       if( en_i )
-        PC <= PC + ( ( ( Flag & RD[30] ) | RD[31]  ) ? ( const_SE ) : ( 4 ) );
+        PC <= PC + add_to_PC;
+//        PC <= PC + ( ( ( Flag & RD[30] ) | RD[31]  ) ? ( const_SE ) : ( 4 ) );
 //        PC <= PC + 4;
   
   RAM ram(
@@ -61,8 +65,8 @@ module primitive_device(
     .WE3_i( WE3 )
   );
 
-  wire ALUOp;
-  assign ALUOp = RD[26:23];
+  wire [4:0] ALUOp;
+  assign ALUOp = { 1'b0, RD[26:23] };
 
   ALU_RISCV alu(
     .ALUOp ( ALUOp ),
