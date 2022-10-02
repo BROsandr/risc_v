@@ -5,7 +5,7 @@ module tb_prim_device();
   reg clk = 0;
   reg rst = 0;
   
-  reg [31:0] result;
+  reg [15:0] result;
   
   reg en = 0;
   

@@ -2,13 +2,13 @@ module primitive_device(
   input clk_i,
   input rst_i,
   
-  input en_i,
+//  input en_i,
   
-  output [31:0] HEX_o,
+  output [15:0] HEX_o,
   
-  input  [2:0]  SW_i,
+  input  [2:0]  SW_i
   
-  output        done_o
+//  output        done_o
 );
   wire [31:0] RD1;
   wire [31:0] RD2;
@@ -32,10 +32,10 @@ module primitive_device(
     if( rst_i )
       PC <= 0;
     else
-      if( en_i )
+//      if( en_i )
         PC <= PC + add_to_PC;
   
-  assign done_o = (add_to_PC == 0) && en_i;
+//  assign done_o = (add_to_PC == 0) && en_i;
   
   RAM ram(
     .A_i  ( PC  ),
