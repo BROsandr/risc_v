@@ -9,7 +9,7 @@ module tb_prim_device();
   
   reg en = 0;
   
-  reg [2:0] SW = 3;
+  reg [2:0] SW = 7;
   
   wire done;
   
@@ -20,7 +20,7 @@ module tb_prim_device();
     .en_i ( en ),
     .SW_i ( SW ),
     .done_o( done )
-);
+  );
   
   always
     #10 clk = !clk;
@@ -42,9 +42,8 @@ module tb_prim_device();
       @( posedge clk );
       en = 1;
       $display( "primitive device test" );
-      @( posedge clk );
-      @( posedge clk );
       @( posedge done );
+      @( posedge clk );
       $display( "result = %d", result );
     end
 

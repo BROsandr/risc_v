@@ -23,7 +23,7 @@ module primitive_device(
   wire [31:0] const_SE;
   assign const_SE = { {24{ RD[12] }}, RD[12:5] };
   
-  reg signed [8:0] PC;
+  reg [8:0] PC;
   
   wire [8:0] add_to_PC;
   assign add_to_PC = ( ( Flag & RD[30] ) | RD[31]  ) ? ( const_SE ) : ( 4 );
