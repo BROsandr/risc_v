@@ -1,0 +1,14 @@
+reg[5] = -1                      
+reg[4] = 1                       \\ factorial
+reg[2] = switches                \\ i
+if(reg[2] == reg[0]) PC = PC + 40
+reg[1] = 0                       \\ sum
+reg[3] = reg[2]                  \\ j
+if(reg[3] == reg[0]) PC = PC + 16
+reg[1] = reg[1] + reg[4]
+reg[3] = reg[3] + reg[5]
+PC = PC - 12
+reg[4]=reg[1]
+reg[2] = reg[2] + reg[5]
+PC = PC - 36
+PC = PC + 0
