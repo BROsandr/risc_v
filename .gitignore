@@ -2,3 +2,4 @@ risc_v.cache/
 risc_v.hw/
 risc_v.ip_user_files/
 risc_v.sim/
+risc_v.runs/

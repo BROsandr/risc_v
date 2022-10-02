@@ -9,11 +9,14 @@ module tb_prim_device();
   
   reg en = 0;
   
+  reg [2:0] SW = 1;
+  
   primitive_device primitive_device(
     .clk_i( clk ),
     .rst_i( rst ),
     .HEX_o( result ),
-    .en_i ( en )
+    .en_i ( en ),
+    .SW_i ( SW )
 );
   
   always
@@ -38,7 +41,7 @@ module tb_prim_device();
       $display( "primitive device test" );
       @( posedge clk );
       @( posedge clk );
-      #200
+      #400
       $display( "result = %d", result );
     end
 

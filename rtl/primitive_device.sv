@@ -4,7 +4,9 @@ module primitive_device(
   
   input en_i,
   
-  output [31:0] HEX_o
+  output [31:0] HEX_o,
+  
+  input  [2:0]  SW_i
 );
   wire [31:0] RD1;
   wire [31:0] RD2;
@@ -30,16 +32,39 @@ module primitive_device(
     else
       if( en_i )
         PC <= PC + add_to_PC;
-//        PC <= PC + ( ( ( Flag & RD[30] ) | RD[31]  ) ? ( const_SE ) : ( 4 ) );
-//        PC <= PC + 4;
   
   RAM ram(
     .A_i  ( PC  ),
     .RD_o ( RD  )
   );
 
-  wire [31:0] WD3_mux;
-  assign WD3_mux = ( RD[28] ) ? ( Result ) : ( const_SE ) ;
+  reg [31:0] WD3_mux;
+  
+  wire [31:0] SW_E;
+  assign SW_E = { {29{ 1'b0 }}, SW_i };
+  
+  always @( * )
+    case( RD[29:28] )
+      1:
+        begin
+          WD3_mux = SW_E;
+        end
+        
+      2:
+        begin
+          WD3_mux = const_SE;
+        end
+        
+      3:
+        begin
+          WD3_mux = Result;
+        end
+      
+      default:
+        begin
+          WD3_mux = -1;
+        end
+    endcase
 
   wire [4:0] A1;
   assign A1 = RD[22:18];
