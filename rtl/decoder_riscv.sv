@@ -16,8 +16,8 @@ module decoder_riscv (
   output  reg         jalr_o              // 
 );
 
-  wire [4:0] opcode;
-  assign opcode = fetched_instr_i[6:2];
+  wire [6:0] opcode;
+  assign opcode = fetched_instr_i[6:0];
   
   wire [2:0] funct3;
   assign funct3 = fetched_instr_i[14:12];
@@ -40,7 +40,7 @@ module decoder_riscv (
 //    jalr_o            = 0;
     
     case( opcode )
-      `LOAD_OPCODE: begin
+      { `LOAD_OPCODE, 2'b11 }: begin
         ex_op_a_sel_o     = `OP_A_RS1;   
         ex_op_b_sel_o     = `OP_B_IMM_I;
         alu_op_o          = `ALU_ADD;
@@ -64,7 +64,7 @@ module decoder_riscv (
         end
       end
       
-      `MISC_MEM_OPCODE: begin
+      { `MISC_MEM_OPCODE, 2'b11 }: begin
         ex_op_a_sel_o     = `OP_A_RS1;   
         ex_op_b_sel_o     = `OP_B_IMM_I;
         alu_op_o          = `ALU_ADD;
@@ -79,7 +79,7 @@ module decoder_riscv (
         jalr_o            = 0;
       end
       
-      `OP_IMM_OPCODE: begin
+      { `OP_IMM_OPCODE, 2'b11 }: begin
         ex_op_a_sel_o     = `OP_A_RS1;   
         ex_op_b_sel_o     = `OP_B_IMM_I;
         alu_op_o          = { 2'b00, funct3 };
@@ -103,7 +103,7 @@ module decoder_riscv (
               illegal_instr_o = 1;
       end  
       
-      `AUIPC_OPCODE: begin
+      { `AUIPC_OPCODE, 2'b11 }: begin
         ex_op_a_sel_o     = `OP_A_CURR_PC;   
         ex_op_b_sel_o     = `OP_B_IMM_U;
         alu_op_o          = `ALU_ADD;
@@ -117,13 +117,49 @@ module decoder_riscv (
         jal_o             = 0;
         jalr_o            = 0;
       end  
-//      `STORE_OPCODE   
-//      `OP_OPCODE      
-//      `LUI_OPCODE     
-//      `BRANCH_OPCODE  
-//      `JALR_OPCODE    
-//      `JAL_OPCODE     
-//      `SYSTEM_OPCODE  
+      
+      { `STORE_OPCODE, 2'b11 }: begin
+        ex_op_a_sel_o     = `OP_A_RS1;   
+        ex_op_b_sel_o     = `OP_B_IMM_S;
+        alu_op_o          = `ALU_ADD;
+        mem_req_o         = 1;
+        mem_we_o          = 1;
+        mem_size_o        = funct3;
+        gpr_we_a_o        = 0;
+        wb_src_sel_o      = `WB_LSU_DATA;
+        illegal_instr_o   = 0;
+        branch_o          = 0;
+        jal_o             = 0;
+        jalr_o            = 0;
+        
+        if( funct3 != `LDST_B  &&
+            funct3 != `LDST_H  &&
+            funct3 != `LDST_W ) begin
+          illegal_instr_o = 1;
+          mem_size_o = `LDST_B;
+        end
+      end 
+//      { `OP_OPCODE      
+//      { `LUI_OPCODE     
+//      { `BRANCH_OPCODE  
+//      { `JALR_OPCODE    
+//      { `JAL_OPCODE     
+//      { `SYSTEM_OPCODE  
+
+      default: begin
+        ex_op_a_sel_o     = `OP_A_CURR_PC;   
+        ex_op_b_sel_o     = `OP_B_IMM_U;
+        alu_op_o          = `ALU_ADD;
+        mem_req_o         = 0;
+        mem_we_o          = 0;
+        mem_size_o        = `LDST_B;
+        gpr_we_a_o        = 0;
+        wb_src_sel_o      = `WB_EX_RESULT;
+        illegal_instr_o   = 1;
+        branch_o          = 0;
+        jal_o             = 0;
+        jalr_o            = 0;
+      end
     endcase
   end
           
