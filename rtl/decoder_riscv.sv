@@ -44,15 +44,21 @@ module decoder_riscv (
         mem_req_o         = 1;
         mem_we_o          = 0;
         mem_size_o        = funct3;
-        gpr_we_a_o        = 0;
+        gpr_we_a_o        = 1;
         wb_src_sel_o      = `WB_LSU_DATA;
         illegal_instr_o   = 0;
         branch_o          = 0;
         jal_o             = 0;
         jalr_o            = 0;
         
-//        if( funct3 > 5 )
-//          illegal_instr_o = 1;
+        if( funct3 != `LDST_B  &&
+            funct3 != `LDST_H  &&
+            funct3 != `LDST_W  &&
+            funct3 != `LDST_BU &&
+            funct3 != `LDST_HU ) begin
+          illegal_instr_o = 1;
+          mem_size_o = `LDST_B;
+        end
       end
       
       `MISC_MEM_OPCODE: begin
@@ -69,7 +75,21 @@ module decoder_riscv (
         jal_o             = 0;
         jalr_o            = 0;
       end
-//      `OP_IMM_OPCODE  
+      
+      `OP_IMM_OPCODE: begin
+        ex_op_a_sel_o     = `OP_A_RS1;   
+        ex_op_b_sel_o     = `OP_B_IMM_I;
+        alu_op_o          = `ALU_ADD;
+        mem_req_o         = 0;
+        mem_we_o          = 0;
+        mem_size_o        = funct3;
+        gpr_we_a_o        = 1;
+        wb_src_sel_o      = `WB_EX_RESULT;
+        illegal_instr_o   = 0;
+        branch_o          = 0;
+        jal_o             = 0;
+        jalr_o            = 0;
+      end  
 //      `AUIPC_OPCODE   
 //      `STORE_OPCODE   
 //      `OP_OPCODE      
