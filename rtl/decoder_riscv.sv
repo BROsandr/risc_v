@@ -21,6 +21,9 @@ module decoder_riscv (
   
   wire [2:0] funct3;
   assign funct3 = fetched_instr_i[14:12];
+  
+  wire [6:0] funct7;
+  assign funct7 = fetched_instr_i[31:25];
 
   always_comb begin
 //    ex_op_a_sel_o     = `OP_A_RS1;   
@@ -79,16 +82,25 @@ module decoder_riscv (
       `OP_IMM_OPCODE: begin
         ex_op_a_sel_o     = `OP_A_RS1;   
         ex_op_b_sel_o     = `OP_B_IMM_I;
-        alu_op_o          = `ALU_ADD;
+        alu_op_o          = { 2'b00, funct3 };
         mem_req_o         = 0;
         mem_we_o          = 0;
-        mem_size_o        = funct3;
+        mem_size_o        = `LDST_B;
         gpr_we_a_o        = 1;
         wb_src_sel_o      = `WB_EX_RESULT;
         illegal_instr_o   = 0;
         branch_o          = 0;
         jal_o             = 0;
-        jalr_o            = 0;
+        jalr_o            = 0;    
+           
+        if( alu_op_o == `ALU_SLL ||
+            alu_op_o == `ALU_SRL ) begin
+          if( funct7 != 0 )
+            illegal_instr_o = 1;
+        end else
+          if( alu_op_o == `ALU_SRA )
+            if( funct7 != 7'b0100000 )
+              illegal_instr_o = 1;
       end  
 //      `AUIPC_OPCODE   
 //      `STORE_OPCODE   
