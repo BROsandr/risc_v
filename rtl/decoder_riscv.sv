@@ -67,7 +67,7 @@ module decoder_riscv (
         alu_op_o          = `ALU_ADD;
         mem_req_o         = 0;
         mem_we_o          = 0;
-        mem_size_o        = funct3;
+        mem_size_o        = `LDST_B;
         gpr_we_a_o        = 0;
         wb_src_sel_o      = `WB_LSU_DATA;
         illegal_instr_o   = 0;
