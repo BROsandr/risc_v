@@ -182,7 +182,26 @@ module decoder_riscv (
         jalr_o            = 0;
       end  
            
-//      { `BRANCH_OPCODE  
+      { `BRANCH_OPCODE, 2'b11 }: begin
+        ex_op_a_sel_o     = `OP_A_RS1;   
+        ex_op_b_sel_o     = `OP_B_RS2;
+        alu_op_o          = { 2'b11, funct3 };
+        mem_req_o         = 0;
+        mem_we_o          = 0;
+        mem_size_o        = `LDST_B;
+        gpr_we_a_o        = 0;
+        wb_src_sel_o      = `WB_EX_RESULT;
+        illegal_instr_o   = 0;
+        branch_o          = 1;
+        jal_o             = 0;
+        jalr_o            = 0;
+        
+        if( funct3 == 3'b011 ||
+            funct3 == 3'b010 ) begin
+          illegal_instr_o   = 1;
+          alu_op_o          = `ALU_EQ;
+        end
+      end    
 //      { `JALR_OPCODE    
 //      { `JAL_OPCODE     
 //      { `SYSTEM_OPCODE  
