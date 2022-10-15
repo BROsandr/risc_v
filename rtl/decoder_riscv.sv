@@ -102,7 +102,21 @@ module decoder_riscv (
             if( funct7 != 7'b0100000 )
               illegal_instr_o = 1;
       end  
-//      `AUIPC_OPCODE   
+      
+      `AUIPC_OPCODE: begin
+        ex_op_a_sel_o     = `OP_A_CURR_PC;   
+        ex_op_b_sel_o     = `OP_B_IMM_U;
+        alu_op_o          = `ALU_ADD;
+        mem_req_o         = 0;
+        mem_we_o          = 0;
+        mem_size_o        = `LDST_B;
+        gpr_we_a_o        = 1;
+        wb_src_sel_o      = `WB_EX_RESULT;
+        illegal_instr_o   = 0;
+        branch_o          = 0;
+        jal_o             = 0;
+        jalr_o            = 0;
+      end  
 //      `STORE_OPCODE   
 //      `OP_OPCODE      
 //      `LUI_OPCODE     
