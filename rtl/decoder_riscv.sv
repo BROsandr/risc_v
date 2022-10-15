@@ -15,6 +15,9 @@ module decoder_riscv (
   output  reg         jal_o,              // ??? ??????
   output  reg         jalr_o              // 
 );
+  localparam FUNCT7_1 = 7'b0100000,
+             FUNCT7_0 = 7'b0000000;
+
 
   wire [6:0] opcode;
   assign opcode = fetched_instr_i[6:0];
@@ -95,11 +98,11 @@ module decoder_riscv (
            
         if( alu_op_o == `ALU_SLL ||
             alu_op_o == `ALU_SRL ) begin
-          if( funct7 != 0 )
+          if( funct7 != FUNCT7_0 )
             illegal_instr_o = 1;
         end else
           if( alu_op_o == `ALU_SRA )
-            if( funct7 != 7'b0100000 )
+            if( funct7 != FUNCT7_1 )
               illegal_instr_o = 1;
       end  
       
@@ -139,7 +142,30 @@ module decoder_riscv (
           mem_size_o = `LDST_B;
         end
       end 
-//      { `OP_OPCODE      
+      
+      { `OP_OPCODE, 2'b11 }: begin
+        ex_op_a_sel_o     = `OP_A_RS1;   
+        ex_op_b_sel_o     = `OP_B_RS2;
+        alu_op_o          = { 2'b00, funct3 };
+        mem_req_o         = 0;
+        mem_we_o          = 0;
+        mem_size_o        = `LDST_B;
+        gpr_we_a_o        = 1;
+        wb_src_sel_o      = `WB_EX_RESULT;
+        illegal_instr_o   = 0;
+        branch_o          = 0;
+        jal_o             = 0;
+        jalr_o            = 0;
+        
+        if( funct7 == FUNCT7_1 ) begin
+          if( funct3 != 3'b000 &&
+              funct3 != 3'b101 )
+            illegal_instr_o   = 1;
+        end else
+          if( funct7 != FUNCT7_0 )
+            illegal_instr_o   = 1;
+            
+      end       
 //      { `LUI_OPCODE     
 //      { `BRANCH_OPCODE  
 //      { `JALR_OPCODE    
