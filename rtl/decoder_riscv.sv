@@ -35,26 +35,26 @@ module decoder_riscv (
 //    branch_o          = 0;
 //    jal_o             = 0;
 //    jalr_o            = 0;
-//    case( opcode )
-//      `LOAD_OPCODE: begin
-          ex_op_a_sel_o     = `OP_A_RS1;   
-          ex_op_b_sel_o     = `OP_B_IMM_I;
-          alu_op_o          = `ALU_ADD;
-          mem_req_o         = 1;
-          mem_we_o          = 0;
-          mem_size_o        = funct3;
-          gpr_we_a_o        = 0;
-          wb_src_sel_o      = `WB_LSU_DATA;
-          illegal_instr_o   = 0;
-          branch_o          = 0;
-          jal_o             = 0;
-          jalr_o            = 0;
-          
+    case( opcode )
+      `LOAD_OPCODE: begin
+        ex_op_a_sel_o     = `OP_A_RS1;   
+        ex_op_b_sel_o     = `OP_B_IMM_I;
+        alu_op_o          = `ALU_ADD;
+        mem_req_o         = 1;
+        mem_we_o          = 0;
+        mem_size_o        = funct3;
+        gpr_we_a_o        = 0;
+        wb_src_sel_o      = `WB_LSU_DATA;
+        illegal_instr_o   = 0;
+        branch_o          = 0;
+        jal_o             = 0;
+        jalr_o            = 0;
+        
         if( funct3 > 5 )
           illegal_instr_o = 1;
-        end
-//      end
-//    endcase
+      end
+    endcase
+  end
           
 //      `MISC_MEM_OPCODE
 //      `OP_IMM_OPCODE  
