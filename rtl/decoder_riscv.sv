@@ -16,41 +16,45 @@ module decoder_riscv (
   output  reg         jalr_o              // 
 );
 
-  wire opcode;
+  wire [6:0] opcode;
+  assign opcode = fetched_instr_i[6:0];
+  
   wire [2:0] funct3;
+  assign funct3 = fetched_instr_i[14:12];
 
   always_comb begin
-    ex_op_a_sel_o     = `OP_A_RS1;   
-    ex_op_b_sel_o     = `OP_B_IMM_I;
-    alu_op_o          = `ALU_ADD;
-    mem_req_o         = 0;
-    mem_we_o          = 0;
-    mem_size_o        = `LDST_B;
-    gpr_we_a_o        = 0;
-    wb_src_sel_o      = `WB_EX_RESULT;
-    illegal_instr_o   = 0;
-    branch_o          = 0;
-    jal_o             = 0;
-    jalr_o            = 0;
-    case( opcode )
-      `LOAD_OPCODE: begin
-        if( funct3 > 5 )
-          illegal_instr_o = 1;
-        else begin
+//    ex_op_a_sel_o     = `OP_A_RS1;   
+//    ex_op_b_sel_o     = `OP_B_IMM_I;
+//    alu_op_o          = `ALU_ADD;
+//    mem_req_o         = 0;
+//    mem_we_o          = 0;
+//    mem_size_o        = `LDST_B;
+//    gpr_we_a_o        = 0;
+//    wb_src_sel_o      = `WB_EX_RESULT;
+//    illegal_instr_o   = 0;
+//    branch_o          = 0;
+//    jal_o             = 0;
+//    jalr_o            = 0;
+//    case( opcode )
+//      `LOAD_OPCODE: begin
           ex_op_a_sel_o     = `OP_A_RS1;   
           ex_op_b_sel_o     = `OP_B_IMM_I;
           alu_op_o          = `ALU_ADD;
-          mem_req_o         = mem_size_o;
+          mem_req_o         = 1;
           mem_we_o          = 0;
           mem_size_o        = funct3;
-          gpr_we_a_o        = 1;
+          gpr_we_a_o        = 0;
           wb_src_sel_o      = `WB_LSU_DATA;
           illegal_instr_o   = 0;
           branch_o          = 0;
           jal_o             = 0;
           jalr_o            = 0;
+          
+        if( funct3 > 5 )
+          illegal_instr_o = 1;
         end
-      end
+//      end
+//    endcase
           
 //      `MISC_MEM_OPCODE
 //      `OP_IMM_OPCODE  
@@ -62,8 +66,7 @@ module decoder_riscv (
 //      `JALR_OPCODE    
 //      `JAL_OPCODE     
 //      `SYSTEM_OPCODE  
-  end
 
 // ??? ???? ??? ????????
-
+//  end
 endmodule
