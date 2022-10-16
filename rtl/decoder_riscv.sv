@@ -2,46 +2,33 @@
 
 module decoder_riscv (
   input       [31:0]  fetched_instr_i,
-  output  reg [1:0]   ex_op_a_sel_o,      // ?????? ??????? ??????????,
-  output  reg [2:0]   ex_op_b_sel_o,      // ?????? ??? ??? ?????????? 
-  output  reg [4:0]   alu_op_o,           // ????? ?????????????? ??????
-  output  reg         mem_req_o,          // ????????? ?????? ????? 
-  output  reg         mem_we_o,           // always, ? ????? ?? ????? ?????
-  output  reg [2:0]   mem_size_o,         // ?????? always ?????? ??????
-  output  reg         gpr_we_a_o,         // ?????? ?????? ????????,
-  output  reg         wb_src_sel_o,       // ???? ???? ? ????? ?????
-  output  reg         illegal_instr_o,    // ??????????? ?
-  output  reg         branch_o,           // ????????????? ??????????
-  output  reg         jal_o,              // ??? ??????
-  output  reg         jalr_o              // 
+  output  reg [1:0]   ex_op_a_sel_o,      
+  output  reg [2:0]   ex_op_b_sel_o,      
+  output  reg [4:0]   alu_op_o,           
+  output  reg         mem_req_o,          
+  output  reg         mem_we_o,           
+  output  reg [2:0]   mem_size_o,         
+  output  reg         gpr_we_a_o,         
+  output  reg         wb_src_sel_o,       
+  output  reg         illegal_instr_o,    
+  output  reg         branch_o,           
+  output  reg         jal_o,              
+  output  reg         jalr_o              
 );
   localparam FUNCT7_1 = 7'b0100000,
              FUNCT7_0 = 7'b0000000;
 
 
   wire [6:0] opcode;
-  assign opcode = fetched_instr_i[6:0];
+  assign     opcode = fetched_instr_i[6:0];
   
   wire [2:0] funct3;
-  assign funct3 = fetched_instr_i[14:12];
+  assign     funct3 = fetched_instr_i[14:12];
   
   wire [6:0] funct7;
-  assign funct7 = fetched_instr_i[31:25];
+  assign     funct7 = fetched_instr_i[31:25];
 
-  always_comb begin
-//    ex_op_a_sel_o     = `OP_A_RS1;   
-//    ex_op_b_sel_o     = `OP_B_IMM_I;
-//    alu_op_o          = `ALU_ADD;
-//    mem_req_o         = 0;
-//    mem_we_o          = 0;
-//    mem_size_o        = `LDST_B;
-//    gpr_we_a_o        = 0;
-//    wb_src_sel_o      = `WB_EX_RESULT;
-//    illegal_instr_o   = 0;
-//    branch_o          = 0;
-//    jal_o             = 0;
-//    jalr_o            = 0;
-    
+  always_comb
     case( opcode )
       { `LOAD_OPCODE, 2'b11 }: begin
         ex_op_a_sel_o     = `OP_A_RS1;   
@@ -164,7 +151,6 @@ module decoder_riscv (
         end else
           if( funct7 != FUNCT7_0 )
             illegal_instr_o   = 1;
-            
       end
              
       { `LUI_OPCODE, 2'b11 }: begin
@@ -272,10 +258,5 @@ module decoder_riscv (
         jalr_o            = 0;
       end
     endcase
-  end
-          
 
-
-// ??? ???? ??? ????????
-//  end
 endmodule
