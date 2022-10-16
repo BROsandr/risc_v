@@ -236,7 +236,26 @@ module decoder_riscv (
         jal_o             = 1;
         jalr_o            = 0;
       end    
-//      { `SYSTEM_OPCODE  
+      
+      { `SYSTEM_OPCODE, 2'b11 }: begin
+        ex_op_a_sel_o     = `OP_A_CURR_PC;   
+        ex_op_b_sel_o     = `OP_B_INCR;
+        alu_op_o          = `ALU_ADD;
+        mem_req_o         = 0;
+        mem_we_o          = 0;
+        mem_size_o        = `LDST_B;
+        gpr_we_a_o        = 0;
+        wb_src_sel_o      = `WB_EX_RESULT;
+        illegal_instr_o   = 0;
+        branch_o          = 0;
+        jal_o             = 0;
+        jalr_o            = 0;   
+
+        if( fetched_instr_i[31:7] == { 25{ 1'b0 } } || 
+            fetched_instr_i[31:7] == { { 11{ 1'b0 } }, 1'b1 } ) begin
+          illegal_instr_o   = 1;
+        end 
+      end
 
       default: begin
         ex_op_a_sel_o     = `OP_A_CURR_PC;   
