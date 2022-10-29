@@ -1,5 +1,5 @@
 module RAM(
-  input  [8:0]  A_i,
+  input  [7:0]  A_i,
   
   output [31:0] RD_o
 );
