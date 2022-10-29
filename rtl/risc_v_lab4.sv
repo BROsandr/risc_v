@@ -48,11 +48,13 @@ module risc_v_lab4(
   logic        jal;         
   logic        jalr;       
   
-  logic        A;
-  logic        B;
+  logic [31:0] A;
+  logic [31:0] B;
   
-  logic        WD3;
-  assign       WD3 = ( wb_src_sel ) ? ( `WB_LSU_DATA ) : ( `WB_EX_RESULT );
+  logic [31:0] RD_mem;
+  
+  logic [31:0] WD3;
+  assign       WD3 = ( wb_src_sel ) ? ( RD_mem ) : ( Result );
   
   logic [31:0] SW_E;
   assign       SW_E = { {29{ 1'b0 }}, SW_i };
@@ -69,14 +71,7 @@ module risc_v_lab4(
   assign       A2  = instr[24:20];
   
   logic [4:0]  WA3;
-  assign       WA3 = instr[11:7];    
-  
-  always_ff @( posedge clk_i or posedge rst_i )
-    if( rst_i )
-      PC <= 0;
-    else
-      if( en_i )
-        PC <= PC + add_to_PC;      
+  assign       WA3 = instr[11:7];       
   
   decoder_riscv decoder_riscv (
     .fetched_instr_i( RD ),
@@ -99,21 +94,6 @@ module risc_v_lab4(
     .RD_o ( RD  )
   );
   
-  always_comb
-    case( ex_op_a_sel )
-      `OP_A_RS1    : A = RD1;  
-      `OP_A_CURR_PC: A = PC;
-      `OP_A_ZERO   : A = 0;
-    endcase
-    
-  always_comb
-    case( ex_op_b_sel )
-      `OP_B_RS2  :   B = RD2;  
-      `OP_B_IMM_U:   B = { instr[31:12], { 12{1'b0} } };
-      `OP_B_IMM_S:   B = imm_S;
-      `OP_B_INCR :   B = 4;
-    endcase  
-
   RF rf(
     .clk_i( clk_i ),
     .rst_i( rst_i ),
@@ -135,10 +115,36 @@ module risc_v_lab4(
   ); 
   
   data_memory data_memory(
-    .clk_i ( clk_i ),
-    .rst
+    .clk_i( clk_i ),
+    .rst_i( rst_i ),
+    .A_i  ( Result ),
+    .WD_i ( RD2 ),
+    .RD_o ( RD_mem ),
+    .WE_i ( mem_we )
+  );  
+  
+  always_ff @( posedge clk_i or posedge rst_i )
+    if( rst_i )
+      PC <= 0;
+    else
+      if( en_i )
+        PC <= ( jalr ) ? ( RD1 + imm_I ) : ( PC + add_to_PC );   
+  
+  always_comb
+    case( ex_op_a_sel )
+      `OP_A_RS1    : A = RD1;  
+      `OP_A_CURR_PC: A = PC;
+      `OP_A_ZERO   : A = 0;
+      default      : A = 0;
+    endcase
     
-    .WD( RD2 ),
-    .A ( Result ),
-    
+  always_comb
+    case( ex_op_b_sel )
+      `OP_B_RS2  :   B = RD2; 
+      `OP_B_IMM_I:   B = imm_S; 
+      `OP_B_IMM_U:   B = { instr[31:12], { 12{1'b0} } };
+      `OP_B_IMM_S:   B = imm_S;
+      `OP_B_INCR :   B = 4;
+      default    :   B = 0;
+    endcase  
 endmodule
