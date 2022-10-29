@@ -11,12 +11,10 @@ module tb_prim_device();
   
   reg [2:0] SW = 1;
   
-  primitive_device primitive_device(
+  risc_v_lab4 risc_v_lab4(
     .clk_i( clk ),
     .rst_i( rst ),
-    .HEX_o( result ),
-    .en_i ( en ),
-    .SW_i ( SW )
+    .en_i( en )
   );
   
   always
@@ -40,8 +38,8 @@ module tb_prim_device();
       en = 1;
       $display( "primitive device test" );
       #6000
-      @( posedge clk );
-      $display( "result = %d", result );
+      $display( "result = %d", risc_v_lab4.rf.registers[4] );
+      $finish;
     end
 
 endmodule

@@ -4,14 +4,9 @@ module risc_v_lab4(
   input clk_i,
   input rst_i,
   
-  input en_i,
-  
-  output [15:0] OUT_o,
-  
-  input  [2:0]  SW_i
+  input en_i
 );
   logic [31:0] RD1;
-  assign       OUT_o = RD1;
   
   logic [31:0] RD2;
 
@@ -55,9 +50,6 @@ module risc_v_lab4(
   
   logic [31:0] WD3;
   assign       WD3 = ( wb_src_sel ) ? ( RD_mem ) : ( Result );
-  
-  logic [31:0] SW_E;
-  assign       SW_E = { {29{ 1'b0 }}, SW_i };
   
   logic [31:0] PC;
   
@@ -141,7 +133,7 @@ module risc_v_lab4(
   always_comb
     case( ex_op_b_sel )
       `OP_B_RS2  :   B = RD2; 
-      `OP_B_IMM_I:   B = imm_S; 
+      `OP_B_IMM_I:   B = imm_I; 
       `OP_B_IMM_U:   B = { instr[31:12], { 12{1'b0} } };
       `OP_B_IMM_S:   B = imm_S;
       `OP_B_INCR :   B = 4;
