@@ -1,4 +1,4 @@
-module RAM(
+module instruction_memory(
   input  [7:0]  A_i,
   
   output [31:0] RD_o
