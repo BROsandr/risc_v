@@ -8,5 +8,5 @@ module instruction_memory(
   assign RD_o = { RAM[A_i + 3], RAM[A_i + 2], RAM[A_i + 1], RAM[A_i] };
   
   initial
-    $readmemb( "prog.txt", RAM );
+    $readmemh( "prog.txt", RAM );
 endmodule
