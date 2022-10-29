@@ -82,7 +82,10 @@ module decoder_riscv (
         branch_o          = 0;
         jal_o             = 0;
         jalr_o            = 0;    
-           
+        
+        if( alu_op_o == `ALU_SRL && funct7 == FUNCT7_1 )
+            alu_op_o          = { 2'b01, funct3 };  
+                      
         if( alu_op_o == `ALU_SLL ||
             alu_op_o == `ALU_SRL ) begin
           if( funct7 != FUNCT7_0 )
@@ -143,6 +146,9 @@ module decoder_riscv (
         branch_o          = 0;
         jal_o             = 0;
         jalr_o            = 0;
+        
+        if( funct7 == FUNCT7_1 )
+          alu_op_o          = { 2'b01, funct3 };
         
         if( funct7 == FUNCT7_1 ) begin
           if( funct3 != 3'b000 &&
