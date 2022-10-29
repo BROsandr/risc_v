@@ -18,16 +18,16 @@ module tb_risc_v_lab4();
   );
   
   always
-    #10 clk = !clk;
+    #10 clk <= !clk;
   
   initial
     begin
       @( posedge clk ); 
-      rst = 0;
+      rst <= 0;
       @( posedge clk );  
-      rst = 1;
+      rst <= 1;
       @( posedge clk );  
-      rst = 0;
+      rst <= 0;
     end
     
   task input_number( input [11:0] number );
@@ -36,15 +36,15 @@ module tb_risc_v_lab4();
 //      number_reversed[i] = number[11 - i];
 //    end
     logic [31:0] instruction;
-    instruction = { number, 5'b00000, 3'b000, 5'b00001, 7'b0010011 };
+    instruction <= { number, 5'b00000, 3'b000, 5'b00001, 7'b0010011 };
     
     { risc_v_lab4.instruction_memory.RAM[0], 
       risc_v_lab4.instruction_memory.RAM[1],
       risc_v_lab4.instruction_memory.RAM[2],
-      risc_v_lab4.instruction_memory.RAM[3] } = { instruction[7:0], instruction[15:8], instruction[23:16], instruction[31:24] };
+      risc_v_lab4.instruction_memory.RAM[3] } <= { instruction[7:0], instruction[15:8], instruction[23:16], instruction[31:24] };
   endtask
   
-  int number = 6;  
+  int number = 11;  
     
   initial
     begin
@@ -52,7 +52,7 @@ module tb_risc_v_lab4();
       @( negedge rst );
       @( posedge clk );
       
-      en = 1;
+      en <= 1;
       $display( "primitive device test" );
       #6000
       if( risc_v_lab4.rf.registers[4] )
