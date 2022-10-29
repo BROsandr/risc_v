@@ -25,10 +25,10 @@ module risc_v_lab4(
   assign       imm_S = { { 21{instr[31]} },  instr[30:25], instr[11:7] };  
   
   logic [31:0] imm_J;
-  assign       imm_J = { { 13{instr[31]} },  instr[19:12], instr[20], instr[30:21] };    
+  assign       imm_J = { { 12{instr[31]} },  instr[19:12], instr[20], instr[30:21], 1'b0 };    
   
   logic [31:0] imm_B;
-  assign       imm_B = { { 13{instr[31]} },  instr[7], instr[30:25], instr[11:8] };    
+  assign       imm_B = { { 12{instr[31]} },  instr[7], instr[30:25], instr[11:8], 1'b0 };    
   
   logic [1:0]  ex_op_a_sel;
   logic [2:0]  ex_op_b_sel; 
