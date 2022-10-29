@@ -13,12 +13,18 @@ module data_memory(
 
   reg [7:0] mem [0:1023];
   
+  wire      virtual_address;
+  assign    virtual_address = A_i - 32'h88000000;
+  
+  assign RD_o = ( A_i >= 32'h88000000 && A_i <= 32'h880003FC ) ? ( mem[virtual_address] ) : ( 0 );
+  
   always_ff @( posedge clk_i or posedge rst_i )
     if( rst_i )
       for( int i = 0; i < 1024; ++i )
         mem[i] <= 0;
     else
       if( WE_i )
-        { mem[A_i], mem[A_i + 1], mem[A_i + 2], mem[A_i + 3] } <= WD_i;
+        if( A_i >= 32'h88000000 && A_i <= 32'h880003FC )
+          { mem[virtual_address], mem[virtual_address + 1], mem[virtual_address + 2], mem[virtual_address + 3] } <= WD_i;
         
 endmodule
