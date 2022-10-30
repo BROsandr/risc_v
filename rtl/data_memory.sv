@@ -25,6 +25,6 @@ module data_memory(
     else
       if( WE_i )
         if( A_i >= 32'h88000000 && A_i <= 32'h880003FC )
-          { mem[virtual_address], mem[virtual_address + 1], mem[virtual_address + 2], mem[virtual_address + 3] } <= WD_i;
+          { mem[virtual_address + 3], mem[virtual_address + 2], mem[virtual_address + 1], mem[virtual_address] } <= WD_i;
         
 endmodule
