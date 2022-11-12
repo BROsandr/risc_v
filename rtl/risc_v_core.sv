@@ -1,6 +1,6 @@
 `include "../common/defines_riscv.v"
 
-module risc_v_lab4(
+module risc_v_core(
   input clk_i,
   input rst_i,
   
