@@ -1,21 +1,33 @@
 `include "../common/defines_riscv.v"
 
-module risc_v_core(
-  input clk_i,
-  input rst_i,
+module miriscv_core(
+  input         clk_i,
+  input         rst_n_i,
   
-  input en_i
+  input [31:0]  instr_rdata_i,
+  input [31:0]  instr_addr_o,
+  
+  input  [31:0] data_rdata_i,
+  output        data_req_o,
+  output        data_we_o,
+  output [3:0]  data_be_o,
+  output [31:0] data_addr_o,
+  output [31:0] data_wdata_o 
 );
   logic [31:0] RD1;
   
   logic [31:0] RD2;
+  assign       data_wdata_o = RD2;
 
   logic [31:0] RD;
+  assign       RD           = instr_rdata_i;
   
   logic [31:0] instr;
-  assign       instr = RD;
+  assign       instr        = RD;
   
   logic [31:0] Result;
+  assign       data_addr_o  = Result;
+  
   logic        comp;
   
   logic [31:0] imm_I;
@@ -43,15 +55,20 @@ module risc_v_core(
   logic        jal;         
   logic        jalr;       
   
+  assign       data_req_o  = mem_req;
+  assign       data_we_o   = mem_we;
+  
   logic [31:0] A;
   logic [31:0] B;
   
   logic [31:0] RD_mem;
+  assign       data_rdata_i = RD_mem;
   
   logic [31:0] WD3;
   assign       WD3 = ( wb_src_sel ) ? ( RD_mem ) : ( Result );
   
   logic [31:0] PC;
+  assign       instr_addr_o = PC;
   
   logic [31:0] add_to_PC;
   assign       add_to_PC = ( ( comp & branch ) | jal  ) ? ( ( branch ) ? ( imm_B ) : ( imm_J ) ) : ( 4 );
@@ -81,14 +98,9 @@ module risc_v_core(
     .jalr_o         ( jalr )              
   );
   
-  instruction_memory instruction_memory(
-    .A_i  ( PC  ),
-    .RD_o ( RD  )
-  );
-  
   RF rf(
     .clk_i( clk_i ),
-    .rst_i( rst_i ),
+    .rst_i( rst_n_i ),
     .A1_i ( A1 ),
     .A2_i ( A2  ),
     .WA3_i( WA3 ),
@@ -106,20 +118,11 @@ module risc_v_core(
     .Flag  ( comp   )
   ); 
   
-  data_memory data_memory(
-    .clk_i( clk_i ),
-    .rst_i( rst_i ),
-    .A_i  ( Result ),
-    .WD_i ( RD2 ),
-    .RD_o ( RD_mem ),
-    .WE_i ( mem_we )
-  );  
-  
   always_ff @( posedge clk_i or posedge rst_i )
     if( rst_i )
       PC <= 0;
     else
-      if( en_i )
+      if( enpc )
         PC <= ( jalr ) ? ( RD1 + imm_I ) : ( PC + add_to_PC );   
   
   always_comb
