@@ -121,7 +121,7 @@ module miriscv_core(
   );
   
   RF rf(
-    .clk_i( clk_i ),
+    .clk_i( clk_i    ),
     .rst_i( rst_n_i  ),
     .A1_i ( A1       ),
     .A2_i ( A2       ),
