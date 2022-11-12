@@ -2,6 +2,7 @@
 
 module decoder_riscv (
   input       [31:0]  fetched_instr_i,
+  input               lsu_stall_req_i,
   output  reg [1:0]   ex_op_a_sel_o,      
   output  reg [2:0]   ex_op_b_sel_o,      
   output  reg [4:0]   alu_op_o,           
@@ -13,7 +14,8 @@ module decoder_riscv (
   output  reg         illegal_instr_o,    
   output  reg         branch_o,           
   output  reg         jal_o,              
-  output  reg         jalr_o              
+  output  reg         jalr_o,
+  output              enpc_o             
 );
   localparam FUNCT7_1 = 7'b0100000,
              FUNCT7_0 = 7'b0000000;
@@ -27,6 +29,8 @@ module decoder_riscv (
   
   wire [6:0] funct7;
   assign     funct7 = fetched_instr_i[31:25];
+
+  assign     enpc_o = lsu_stall_req_i;
 
   always_comb
     case( opcode )

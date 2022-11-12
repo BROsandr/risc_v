@@ -17,7 +17,6 @@ module miriscv_core(
   logic [31:0] RD1;
   
   logic [31:0] RD2;
-  assign       data_wdata_o = RD2;
 
   logic [31:0] RD;
   assign       RD           = instr_rdata_i;
@@ -26,9 +25,10 @@ module miriscv_core(
   assign       instr        = RD;
   
   logic [31:0] Result;
-  assign       data_addr_o  = Result;
   
   logic        comp;
+  
+  logic        enpc;
   
   logic [31:0] imm_I;
   assign       imm_I = { { 21{instr[31]} },  instr[30:20] };
@@ -55,14 +55,10 @@ module miriscv_core(
   logic        jal;         
   logic        jalr;       
   
-  assign       data_req_o  = mem_req;
-  assign       data_we_o   = mem_we;
-  
   logic [31:0] A;
   logic [31:0] B;
   
   logic [31:0] RD_mem;
-  assign       data_rdata_i = RD_mem;
   
   logic [31:0] WD3;
   assign       WD3 = ( wb_src_sel ) ? ( RD_mem ) : ( Result );
@@ -82,31 +78,57 @@ module miriscv_core(
   logic [4:0]  WA3;
   assign       WA3 = instr[11:7];       
   
+  logic        lsu_stall_req;
+  
+  miriscv_lsu miriscv_lsu(
+    .clk_i          ( clk_i ), // ?????????????
+    .arstn_i        ( rst_n_i ), // ????? ?????????? ?????????
+
+    // core protocol
+    .lsu_addr_i     ( RD            ), // ?????, ?? ???????? ????? ??????????
+    .lsu_we_i       ( mem_we        ), // 1 - ???? ????? ???????? ? ??????
+    .lsu_size_i     ( mem_size      ), // ?????? ?????????????? ??????
+    .lsu_data_i     ( RD2           ), // ?????? ??? ?????? ? ??????
+    .lsu_req_i      ( mem_req       ), // 1 - ?????????? ? ??????
+    .lsu_stall_req_o( lsu_stall_req ), // ???????????? ??? !enable pc
+    .lsu_data_o     ( RD_mem        ), // ?????? ????????? ?? ??????
+
+    // memory protocol
+    .data_rdata_i   ( data_rdata_i  ), // ??????????? ??????
+    .data_req_o     ( data_req_o    ), // 1 - ?????????? ? ??????
+    .data_we_o      ( data_we_o     ), // 1 - ??? ?????? ?? ??????
+    .data_be_o      ( data_be_o     ), // ? ????? ?????? ????? ???? ?????????
+    .data_addr_o    ( data_addr_o   ), // ?????, ?? ???????? ???? ?????????
+    .data_wdata_o   ( data_wdata_o  ) // ??????, ??????? ????????? ????????
+  ); 
+  
   decoder_riscv decoder_riscv (
-    .fetched_instr_i( RD ),
-    .ex_op_a_sel_o  ( ex_op_a_sel ),      
-    .ex_op_b_sel_o  ( ex_op_b_sel ),      
-    .alu_op_o       ( alu_op ),           
-    .mem_req_o      ( mem_req ),          
-    .mem_we_o       ( mem_we ),           
-    .mem_size_o     ( mem_size ),         
-    .gpr_we_a_o     ( gpr_we_a ),         
-    .wb_src_sel_o   ( wb_src_sel ),       
+    .fetched_instr_i( RD            ),
+    .lsu_stall_req_i( lsu_stall_req ),
+    .ex_op_a_sel_o  ( ex_op_a_sel   ),      
+    .ex_op_b_sel_o  ( ex_op_b_sel   ),      
+    .alu_op_o       ( alu_op        ),           
+    .mem_req_o      ( mem_req       ),          
+    .mem_we_o       ( mem_we        ),           
+    .mem_size_o     ( mem_size      ),         
+    .gpr_we_a_o     ( gpr_we_a      ),         
+    .wb_src_sel_o   ( wb_src_sel    ),       
     .illegal_instr_o( illegal_instr ),    
-    .branch_o       ( branch ),           
-    .jal_o          ( jal ),              
-    .jalr_o         ( jalr )              
+    .branch_o       ( branch        ),           
+    .jal_o          ( jal           ),              
+    .jalr_o         ( jalr          ),
+    .enpc_o         ( enpc          )              
   );
   
   RF rf(
     .clk_i( clk_i ),
-    .rst_i( rst_n_i ),
-    .A1_i ( A1 ),
-    .A2_i ( A2  ),
-    .WA3_i( WA3 ),
-    .WD3_i( WD3 ),
-    .RD1_o( RD1 ),
-    .RD2_o( RD2 ),
+    .rst_i( rst_n_i  ),
+    .A1_i ( A1       ),
+    .A2_i ( A2       ),
+    .WA3_i( WA3      ),
+    .WD3_i( WD3      ),
+    .RD1_o( RD1      ),
+    .RD2_o( RD2      ),
     .WE3_i( gpr_we_a )
   );
 
@@ -118,8 +140,8 @@ module miriscv_core(
     .Flag  ( comp   )
   ); 
   
-  always_ff @( posedge clk_i or posedge rst_i )
-    if( rst_i )
+  always_ff @( posedge clk_i or posedge rst_n_i )
+    if( rst_n_i )
       PC <= 0;
     else
       if( enpc )
