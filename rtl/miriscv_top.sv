@@ -38,7 +38,7 @@ module miriscv_top
 
   miriscv_core core (
     .clk_i   ( clk_i   ),
-    .arstn_i ( rst_n_i ),
+    .rst_n_i ( rst_n_i ),
 
     .instr_rdata_i ( instr_rdata_core ),
     .instr_addr_o  ( instr_addr_core  ),

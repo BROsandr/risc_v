@@ -27,6 +27,8 @@ module miriscv_lsu
   logic [1:0] data_byte_offset;
   assign      data_byte_offset = data_rdata_i % 4;
 
+  assign      lsu_stall_req_o  = lsu_req_i;
+
   assign data_req_o = lsu_req_i; // 1 - ?????????? ? ??????
   assign data_we_o = lsu_we_i; // 1 - ??? ?????? ?? ??????
   assign data_addr_o = lsu_addr_i; // ?????, ?? ???????? ???? ?????????
@@ -100,7 +102,7 @@ module miriscv_lsu
 
 	// store
   always_comb begin
-    data_be_o = 4'd0;
+//    data_be_o = 4'd0;
     unique case( lsu_size_i )
       `LDST_B: data_wdata_o = { 4{lsu_data_i[7:0]} };
         
@@ -109,7 +111,7 @@ module miriscv_lsu
       `LDST_W: data_wdata_o = lsu_data_i[31:0];
 
       default: begin
-        data_be_o = 4'dX;
+//        data_be_o = 4'dX;
         data_wdata_o = { 31'dX };
       end
     endcase
