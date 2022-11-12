@@ -39,7 +39,7 @@ module miriscv_ram
   assign instr_rdata_o = mem[(instr_addr_i % RAM_SIZE) / 4];
 
   always@(posedge clk_i) begin
-    if(!rst_n_i) begin
+    if(rst_n_i) begin
       data_rdata_o  <= 32'b0;
     end
     else if(data_req_i) begin

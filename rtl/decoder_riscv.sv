@@ -30,7 +30,7 @@ module decoder_riscv (
   wire [6:0] funct7;
   assign     funct7 = fetched_instr_i[31:25];
 
-  assign     enpc_o = lsu_stall_req_i;
+  assign     enpc_o = !lsu_stall_req_i;
 
   always_comb
     case( opcode )

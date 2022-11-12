@@ -8,7 +8,7 @@ module tb_miriscv_top();
   reg         rst_n      = 0;
 
   
-  int         number     = 61;
+  int         number     = 12;
   
   reg [15:0]  result;
   
@@ -37,7 +37,7 @@ module tb_miriscv_top();
     
     instruction <= { number, 5'b00000, 3'b000, 5'b00001, 7'b0010011 };
     @( posedge clk );
-    dut.ram.mem[0] <= { instruction[7:0], instruction[15:8], instruction[23:16], instruction[31:24] };
+    dut.ram.mem[0] <= { instruction[31:24], instruction[23:16], instruction[15:8], instruction[7:0] };
   endtask  
     
   initial
