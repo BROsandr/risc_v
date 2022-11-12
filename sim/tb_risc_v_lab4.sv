@@ -1,17 +1,18 @@
 `timescale 1ns / 1ps
 
 module tb_risc_v_lab4();
+  localparam  CLK_PERIOD = 20;
 
-  reg         clk    = 0;
-  reg         rst    = 0;
+  reg         clk        = 0;
+  reg         rst        = 0;
+  
+  reg         en         = 0;
+  
+  reg [2:0]   SW         = 1;
+  
+  int         number     = 62;
   
   reg [15:0]  result;
-  
-  reg         en     = 0;
-  
-  reg [2:0]   SW     = 1;
-  
-  int         number = 62;
   
   risc_v_lab4 risc_v_lab4(
     .clk_i( clk ),
@@ -20,7 +21,7 @@ module tb_risc_v_lab4();
   );
   
   always
-    #10 clk <= !clk;
+    #( CLK_PERIOD / 2 ) clk <= !clk;
   
   task reset;
     rst <= 0;
@@ -50,7 +51,7 @@ module tb_risc_v_lab4();
       en <= 1;
       
       $display( "primitive device test" );
-      #6000
+      repeat( 300 ) @( posedge clk );
       if( risc_v_lab4.rf.registers[4] )
         $display( "%d IS PRIME", number );
       else
