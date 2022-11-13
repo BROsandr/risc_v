@@ -16,8 +16,8 @@ module tb_miriscv_top();
     .RAM_SIZE       ( RAM_SIZE           ),
     .RAM_INIT_FILE  ( "prog.txt"         )
   ) dut (
-    .clk_i    ( clk   ),
-    .rst_n_i  ( rst_n )
+    .clk_i          ( clk                ),
+    .rst_n_i        ( rst_n              )
   );
 
   
