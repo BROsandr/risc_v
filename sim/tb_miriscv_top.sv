@@ -34,7 +34,7 @@ module tb_miriscv_top();
     
   task input_number( input [11:0] number, input [4:0] rd = 1 );
     logic [31:0] instruction;
-    instruction <= { number, 5'b00000, 3'b000, rd, 7'b0010011 };
+    instruction    <= { number, 5'b00000, 3'b000, rd, 7'b0010011 };
     @( posedge clk );
     dut.ram.mem[0] <= { instruction[31:24], instruction[23:16], instruction[15:8], instruction[7:0] };
   endtask  
