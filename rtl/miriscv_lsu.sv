@@ -38,7 +38,7 @@ module miriscv_lsu
   
   assign data_req_o = lsu_req_i; // 1 - ?????????? ? ??????
   assign data_we_o = lsu_we_i; // 1 - ??? ?????? ?? ??????
-  assign data_addr_o = lsu_addr_i; // ?????, ?? ???????? ???? ?????????
+  assign data_addr_o = { lsu_addr_i[31:2], 2'b00 }; // ?????, ?? ???????? ???? ?????????
   
   // load
   always_comb
@@ -47,27 +47,26 @@ module miriscv_lsu
         unique case( lsu_byte_offset )
           2'b00  : begin
             data_be_o = 4'b0001;
-            lsu_data_o = ( `LDST_B ) ? ( { { 24{data_rdata_i[7]} }, data_rdata_i[7:0] } ) : 
-                                       ( {24'b0, data_rdata_i[7:0]}                     );
+            lsu_data_o = ( lsu_size_i == `LDST_B ) ? ( { { 24{data_rdata_i[7]} }, data_rdata_i[7:0] } ) : 
+                                                     ( {24'b0, data_rdata_i[7:0]}                     );
           end
           
           2'b01  : begin
             data_be_o = 4'b0010;
-            lsu_data_o = ( `LDST_B ) ? ( { { 24{data_rdata_i[15]} }, data_rdata_i[15:8] } ) :
-                                       ( {24'b0, data_rdata_i[15:8]}                      );
+            lsu_data_o = ( lsu_size_i == `LDST_B ) ? ( { { 24{data_rdata_i[15]} }, data_rdata_i[15:8] } ) :
+                                                     ( {24'b0, data_rdata_i[15:8]}                      );
           end
           
           2'b10  : begin 
             data_be_o = 4'b0100;
-            lsu_data_o = ( `LDST_B ) ? ( { { 24{data_rdata_i[23]} }, data_rdata_i[23:16] } ) :
-                                       ( {24'b0, data_rdata_i[23:16]}                      );
+            lsu_data_o = ( lsu_size_i == `LDST_B ) ? ( { { 24{data_rdata_i[23]} }, data_rdata_i[23:16] } ) :
+                                                     ( {24'b0, data_rdata_i[23:16]}                      );
           end
           
           2'b11  : begin 
             data_be_o = 4'b1000;
-            lsu_data_o = ( `LDST_B ) ? ( { {24{data_rdata_i[31]}}, data_rdata_i[31:24] } ) :
-                                       ( {24'b0, data_rdata_i[31:24]} 
-                   );
+            lsu_data_o = ( lsu_size_i == `LDST_B ) ? ( { {24{data_rdata_i[31]}}, data_rdata_i[31:24] } ) :
+                                                     ( {24'b0, data_rdata_i[31:24]}                    );
           end
           
           default: begin
@@ -80,14 +79,14 @@ module miriscv_lsu
         unique case( lsu_byte_offset )
           2'b00  : begin
             data_be_o = 4'b0011;
-            lsu_data_o = ( `LDST_H ) ? ( {{16{data_rdata_i[15]}}, data_rdata_i[15:0]} ) :
-                                       ( {16'b0, data_rdata_i[15:0]}                  );
+            lsu_data_o = ( lsu_size_i == `LDST_H ) ? ( {{16{data_rdata_i[15]}}, data_rdata_i[15:0]} ) :
+                                                     ( {16'b0, data_rdata_i[15:0]}                  );
           end
           
           2'b10  : begin
             data_be_o = 4'b1100;
-            lsu_data_o = ( `LDST_H ) ? ( {{16{data_rdata_i[31]}}, data_rdata_i[31:16]} ) :
-                                       ( {16'b0, data_rdata_i[31:16]}                  );
+            lsu_data_o = ( lsu_size_i == `LDST_H ) ? ( {{16{data_rdata_i[31]}}, data_rdata_i[31:16]} ) :
+                                                     ( {16'b0, data_rdata_i[31:16]}                  );
           end
           
           default: begin
@@ -109,7 +108,6 @@ module miriscv_lsu
 
 	// store
   always_comb begin
-//    data_be_o = 4'd0;
     unique case( lsu_size_i )
       `LDST_B: data_wdata_o = { 4{lsu_data_i[7:0]} };
         
@@ -117,10 +115,7 @@ module miriscv_lsu
 
       `LDST_W: data_wdata_o = lsu_data_i[31:0];
 
-      default: begin
-//        data_be_o = 4'dX;
-        data_wdata_o = { 31'dx };
-      end
+      default: data_wdata_o = { 31'dx };
     endcase
   end
 endmodule
