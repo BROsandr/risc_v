@@ -27,7 +27,7 @@ module miriscv_top
   logic  [31:0]  data_wdata_ram;
 
   logic  data_mem_valid;
-  assign data_mem_valid = (data_addr_core >= RAM_SIZE) ?  1'b0 : 1'b1;
+  assign data_mem_valid   = (data_addr_core >= RAM_SIZE) ?  1'b0 : 1'b1;
 
   assign data_rdata_core  = (data_mem_valid) ? data_rdata_ram : 1'b0;
   assign data_req_ram     = (data_mem_valid) ? data_req_core : 1'b0;
