@@ -22,10 +22,10 @@ module miriscv_lsu
 ); 
   
   logic [1:0] lsu_byte_offset;
-  assign      lsu_byte_offset = lsu_data_i % 4;
+  assign      lsu_byte_offset = lsu_addr_i % 4;
   
   logic [1:0] data_byte_offset;
-  assign      data_byte_offset = data_rdata_i % 4;
+  assign      data_byte_offset = data_addr_o % 4;
 
   always_ff @( negedge clk_i or posedge arstn_i )
     if( arstn_i )
@@ -71,7 +71,7 @@ module miriscv_lsu
           end
           
           default: begin
-            data_be_o = 4'dX;
+            data_be_o = 4'bxxxx;
             lsu_data_o = { 31'dX };
           end
         endcase
@@ -91,19 +91,19 @@ module miriscv_lsu
           end
           
           default: begin
-            data_be_o = 4'dX;
-            lsu_data_o = { 31'dX };
+            data_be_o = 4'bxxxx;
+            lsu_data_o = { 31'dx };
           end
         endcase
 
       `LDST_W: begin
-        data_be_o = 4'd1;
+        data_be_o = 4'b1111;
         lsu_data_o = data_rdata_i[31:0];
       end
 
       default: begin
-        data_be_o = 4'dX;
-        lsu_data_o = { 31'dX };
+        data_be_o = 4'bxxxx;
+        lsu_data_o = { 31'dx };
       end
     endcase
 
@@ -119,7 +119,7 @@ module miriscv_lsu
 
       default: begin
 //        data_be_o = 4'dX;
-        data_wdata_o = { 31'dX };
+        data_wdata_o = { 31'dx };
       end
     endcase
   end
