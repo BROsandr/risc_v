@@ -22,10 +22,10 @@ module miriscv_lsu
 ); 
   
   logic [1:0] lsu_byte_offset;
-  assign      lsu_byte_offset = lsu_addr_i % 4;
+  assign      lsu_byte_offset = lsu_addr_i[1:0]; // lsu_addr_i % 4
   
   logic [1:0] data_byte_offset;
-  assign      data_byte_offset = data_addr_o % 4;
+  assign      data_byte_offset = data_addr_o[1:0]; // data_addr_o % 4
 
   always_ff @( negedge clk_i or posedge arstn_i )
     if( arstn_i )
