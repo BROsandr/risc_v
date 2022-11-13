@@ -8,7 +8,7 @@ module tb_miriscv_top();
   reg         rst_n      = 0;
 
   
-  int         number     = 68;
+  int         number     = 4;
   
   reg [15:0]  result;
   

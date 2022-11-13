@@ -1,4 +1,4 @@
-`include "constants.vh"
+`include "../common/defines_riscv.v"
 
 module ALU_RISCV(
   input  [4:0]  ALUOp,
