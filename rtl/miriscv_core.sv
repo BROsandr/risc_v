@@ -4,8 +4,8 @@ module miriscv_core(
   input         clk_i,
   input         rst_n_i,
   
-  input  [31:0]  instr_rdata_i,
-  output [31:0]  instr_addr_o,
+  input  [31:0] instr_rdata_i,
+  output [31:0] instr_addr_o,
   
   input  [31:0] data_rdata_i,
   output        data_req_o,
