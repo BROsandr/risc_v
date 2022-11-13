@@ -42,7 +42,7 @@ module tb_miriscv_top();
     
   initial
     begin
-      input_number( number );
+//      input_number( number );
       @( posedge clk );
       reset; 
       @( posedge clk ); 

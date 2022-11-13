@@ -22,6 +22,7 @@ module miriscv_ram
 );
 
   reg [31:0]    mem [0:RAM_SIZE/4-1];
+  reg [31:0]    data_int;
 
   //Init RAM
   integer ram_index;
@@ -43,7 +44,7 @@ module miriscv_ram
       data_rdata_o  <= 32'b0;
     end
     else if(data_req_i) begin
-      data_rdata_o <= mem[(instr_addr_i % RAM_SIZE) / 4];
+      data_rdata_o <= mem[(data_addr_i  % RAM_SIZE) / 4];
 
       if(data_we_i && data_be_i[0])
         mem [data_addr_i[31:2]] [7:0]  <= data_wdata_i[7:0];
