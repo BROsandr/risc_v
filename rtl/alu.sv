@@ -116,6 +116,8 @@ module ALU_RISCV(
         
       default:
         begin
+          Flag_   = 0;
+          Result_ = 0;
         end
     endcase
   end
