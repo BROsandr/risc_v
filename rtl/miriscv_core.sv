@@ -170,7 +170,14 @@ module miriscv_core(
       PC <= 0;
     else
       if( enpc )
-        PC <= ( jalr ) ? ( RD1 + imm_I ) : ( PC + add_to_PC );   
+        unique case( jalr ) inside 
+          0      : PC <= PC + add_to_PC;
+          1      : PC <= RD1 + imm_I;
+          2      : PC <= mepc;
+          3      : PC <= mtvec;
+
+          default: PC <= 0;
+        endcase
   
   always_comb
     case( ex_op_a_sel )
