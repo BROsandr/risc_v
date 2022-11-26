@@ -31,9 +31,9 @@ module miriscv_lsu
   assign      lsu_stall_req_o  = stall_buff & lsu_req_i;
 
   always_ff @(posedge clk_i or posedge arstn_i)
-    if (arstn_i)
+    if( arstn_i )
       stall_buff <= 1;
-    else if (!stall_buff)
+    else if( !stall_buff )
       stall_buff <= 1;
     else
       stall_buff <= !lsu_req_i;
