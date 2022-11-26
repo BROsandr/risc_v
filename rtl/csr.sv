@@ -58,4 +58,27 @@ module csr(
       else if( mie_en )
         mie_o <= csr_write_expr;
 
+    always_ff @(posedge clk_i or posedge rst_i )
+      if( rst_i )
+        mtvec_o <= 0;
+      else if( mtvec_en )
+        mtvec_o <= csr_write_expr;
+
+    always_ff @(posedge clk_i or posedge rst_i )
+      if( rst_i )
+        mscratch <= 0;
+      else if( mscratch_en )
+        mscratch <= csr_write_expr;
+
+    always_ff @(posedge clk_i or posedge rst_i )
+      if( rst_i )
+        mscratch <= 0;
+      else if( mepc_en | OP_i[2] )
+        mscratch <= ( OP_i[2] ) ? ( PC_i ) : ( csr_write_expr );
+
+    always_ff @(posedge clk_i or posedge rst_i )
+      if( rst_i )
+        mcause_o <= 0;
+      else if( mcause_en | OP_i[2] )
+        mcause_o <= ( OP_i[2] ) ? ( mcause_i ) : ( csr_write_expr );
 endmodule
