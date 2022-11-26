@@ -61,3 +61,9 @@
 // writeback source selection
 `define WB_EX_RESULT     1'b0
 `define WB_LSU_DATA      1'b1
+
+// jalr
+`define JALR_PC          2'd0
+`define JALR_IMM         2'd1
+`define JALR_MEPC        2'd2
+`define JALR_MTVEC       2'd3

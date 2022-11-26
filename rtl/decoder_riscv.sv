@@ -14,7 +14,7 @@ module decoder_riscv (
   output  reg         illegal_instr_o,    
   output  reg         branch_o,           
   output  reg         jal_o,              
-  output  reg         jalr_o,
+  output  reg [1:0]   jalr_o,
   output              enpc_o             
 );
   localparam FUNCT7_1 = 7'b0100000,
