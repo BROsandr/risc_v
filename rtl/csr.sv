@@ -14,17 +14,17 @@ module csr(
   output logic [31:0] RD_o
 );
 
-  logic mscratch;
+  logic        mscratch;
 
-  logic mie_en;
-  logic mtvec_en;
-  logic mscratch_en;
-  logic mepc_en;
-  logic mcause_en;
+  logic        mie_en;
+  logic        mtvec_en;
+  logic        mscratch_en;
+  logic        mepc_en;
+  logic        mcause_en;
 
-  logic csr_write_expr;
+  logic [31:0] csr_write_expr;
 
-  logic en[0:4];
+  logic        en            [0:4];
 
   assign mie_en      = en[0];
   assign mtvec_en    = en[1];
@@ -43,54 +43,9 @@ module csr(
       default: RD_o = 0;
     endcase
 
-  always_comb
-    unique case( A_i ) inside 
-      'h304  : begin 
-        en[0]        = OP_i[1] & OP_i[0];
-        en[1]        = 0;
-        en[2]        = 0;
-        en[3]        = 0;
-        en[4]        = 0;
-      end
-
-      'h305  : begin
-        en[0]        = 0;
-        en[1]        = OP_i[1] & OP_i[0];
-        en[2]        = 0;
-        en[3]        = 0;
-        en[4]        = 0;
-      end
-
-      'h340  : begin
-        en[0]        = 0;
-        en[1]        = 0;
-        en[2]        = OP_i[1] & OP_i[0];
-        en[3]        = 0;
-        en[4]        = 0;
-      end
-      'h341  : begin
-        en[0]        = 0;
-        en[1]        = 0;
-        en[2]        = 0;
-        en[3]        = OP_i[1] & OP_i[0];
-        en[4]        = 0;
-      end
-      'h342  : begin
-        en[0]        = 0;
-        en[1]        = 0;
-        en[2]        = 0;
-        en[3]        = 0;
-        en[4]        = OP_i[1] & OP_i[0];
-      end
-
-      default: begin
-        en[0]        = 0;
-        en[1]        = 0;
-        en[2]        = 0;
-        en[3]        = 0;
-        en[4]        = 0;
-      end
-    endcase
+    always_comb
+      for( int i = 0; i < 5; ++i )
+        en[i] = ( A_i == i ) ? ( OP_i[1] & OP_i[0] ) : ( 0 );
 
     always_ff @(posedge clk_i or posedge rst_i )
       if( rst_i )
@@ -112,9 +67,9 @@ module csr(
 
     always_ff @(posedge clk_i or posedge rst_i )
       if( rst_i )
-        mscratch <= 0;
+        mepc_o <= 0;
       else if( mepc_en | OP_i[2] )
-        mscratch <= ( OP_i[2] ) ? ( PC_i ) : ( csr_write_expr );
+        mepc_o <= ( OP_i[2] ) ? ( PC_i ) : ( csr_write_expr );
 
     always_ff @(posedge clk_i or posedge rst_i )
       if( rst_i )
