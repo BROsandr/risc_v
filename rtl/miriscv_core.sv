@@ -60,9 +60,6 @@ module miriscv_core(
   
   logic [31:0] RD_mem;
   
-  logic [31:0] WD3;
-  assign       WD3 = ( wb_src_sel ) ? ( RD_mem ) : ( Result );
-  
   logic [31:0] PC;
   assign       instr_addr_o = PC;
   
@@ -79,6 +76,19 @@ module miriscv_core(
   assign       WA3 = instr[11:7];       
   
   logic        lsu_stall_req;
+
+  logic        RD_mem_or_alu;
+  assign       RD_mem_or_alu = ( wb_src_sel ) ? ( RD_mem ) : ( Result );
+
+  logic        RD_csr;
+
+  logic        WD3_csr;
+
+  logic        A_csr;
+  assign       A_csr = instr[31:20];
+  
+  logic [31:0] WD3;
+  assign       WD3 = ( WD3_csr ) ? ( RD_csr ) : ( RD_mem_or_alu );
   
   miriscv_lsu miriscv_lsu(
     .clk_i          ( clk_i         ), // ?????????????
@@ -139,6 +149,21 @@ module miriscv_core(
     .Result( Result ), 
     .Flag  ( comp   )
   ); 
+
+  csr csr(
+    .clk_i   ( clk_i    ),
+    .rst_i   ( rst_i    ),
+    .mcause_i( mcause_i ),
+    .PC_i( PC ),
+    .A_i( A_csr ),
+    .WD_i( RD1 ),
+    .OP_i( CSRop ),
+
+    .mie_o( mie_o ),
+    .mtvec_o( mtvec ),
+    .mepc_o( mepc ),
+    .RD_o( RD_csr )
+  );
   
   always_ff @( posedge clk_i or posedge rst_n_i )
     if( rst_n_i )

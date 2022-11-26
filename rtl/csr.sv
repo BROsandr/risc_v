@@ -10,11 +10,11 @@ module csr(
   output logic [31:0] mie_o,
   output logic [31:0] mtvec_o,
   output logic [31:0] mepc_o,
-  output logic [31:0] mcause_o,
   output logic [31:0] RD_o
 );
 
   logic        mscratch;
+  logic        mcause;
 
   logic        mie_en;
   logic        mtvec_en;
@@ -83,7 +83,7 @@ module csr(
 
     always_ff @(posedge clk_i or posedge rst_i )
       if( rst_i )
-        mcause_o <= 0;
+        mcause <= 0;
       else if( mcause_en | OP_i[2] )
-        mcause_o <= ( OP_i[2] ) ? ( mcause_i ) : ( csr_write_expr );
+        mcause <= ( OP_i[2] ) ? ( mcause_i ) : ( csr_write_expr );
 endmodule
