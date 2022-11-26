@@ -25,18 +25,18 @@ module csr(
   logic csr_write_expr;
 
   always_comb
-    unique case( A ) inside 
-      'h304  : RD = mie_o;
-      'h305  : RD = mtvec_o;
-      'h340  : RD = mscratch; 
-      'h341  : RD = mepc_o;
-      'h342  : RD = mcause_o;
+    unique case( A_i ) inside 
+      'h304  : RD_o = mie_o;
+      'h305  : RD_o = mtvec_o;
+      'h340  : RD_o = mscratch; 
+      'h341  : RD_o = mepc_o;
+      'h342  : RD_o = mcause_o;
 
-      default: RD = 0;
+      default: RD_o = 0;
     endcase
 
   always_comb
-    unique case( A ) inside 
+    unique case( A_i ) inside 
       'h304  : mie_en      = OP_i[1] & OP_i[0];
       'h305  : mtvec_en    = OP_i[1] & OP_i[0];
       'h340  : mscratch_en = OP_i[1] & OP_i[0]; 
