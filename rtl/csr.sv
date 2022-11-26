@@ -47,6 +47,16 @@ module csr(
       for( int i = 0; i < 5; ++i )
         en[i] = ( A_i == i ) ? ( OP_i[1] & OP_i[0] ) : ( 0 );
 
+    always_comb
+      unique case( OP_i[1:0] ) inside
+        0      : csr_write_expr = 0;
+        1      : csr_write_expr = WD_i;
+        2      : csr_write_expr = RD_o & ~WD_i;
+        3      : csr_write_expr = RD_o |  WD_i;
+
+        default: csr_write_expr = 0;
+      endcase
+
     always_ff @(posedge clk_i or posedge rst_i )
       if( rst_i )
         mie_o <= 0;
