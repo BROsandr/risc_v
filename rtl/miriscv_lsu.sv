@@ -27,14 +27,14 @@ module miriscv_lsu
   logic [1:0] data_byte_offset;
   assign      data_byte_offset = data_addr_o[1:0]; // data_addr_o % 4
 
-  always_ff @( negedge clk_i or posedge arstn_i )
-    if( arstn_i )
-      lsu_stall_req_o <= 0;
-    else if( lsu_req_i && !lsu_stall_req_o )
-      lsu_stall_req_o <= 1;
-    else
-      lsu_stall_req_o <= 0;
+  logic       stall_buff;
+  assign      lsu_stall_req_o  = stall_buff & lsu_req_i;
 
+  always_ff @(posedge clk_i or posedge arstn_i)
+    if (arstn_i || !stall_buff)
+        stall_buff <= 1;
+    else
+        stall_buff <= !lsu_req_i;
   
   assign data_req_o  = lsu_req_i; // 1 - ?????????? ? ??????
   assign data_we_o   = lsu_we_i; // 1 - ??? ?????? ?? ??????
