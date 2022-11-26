@@ -1,5 +1,6 @@
 module csr(
   input               clk_i,
+  input               rst_i,
   input        [31:0] mcause_i,
   input        [31:0] PC_i,
   input        [11:0] A_i,
@@ -15,11 +16,13 @@ module csr(
 
   logic mscratch;
 
-  logic to_mie;
-  logic to_mtvec;
-  logic to_mscratch;
-  logic to_mepc;
-  logic to_mcause;
+  logic mie_en;
+  logic mtvec_en;
+  logic mscratch_en;
+  logic mepc_en;
+  logic mcause_en;
+
+  logic csr_write_expr;
 
   always_comb
     unique case( A ) inside 
@@ -34,19 +37,25 @@ module csr(
 
   always_comb
     unique case( A ) inside 
-      'h304  : to_mie      = OP_i[1] & OP_i[0];
-      'h305  : to_mtvec    = OP_i[1] & OP_i[0];
-      'h340  : to_mscratch = OP_i[1] & OP_i[0]; 
-      'h341  : to_mepc     = OP_i[1] & OP_i[0];
-      'h342  : to_mcause   = OP_i[1] & OP_i[0];
+      'h304  : mie_en      = OP_i[1] & OP_i[0];
+      'h305  : mtvec_en    = OP_i[1] & OP_i[0];
+      'h340  : mscratch_en = OP_i[1] & OP_i[0]; 
+      'h341  : mepc_en     = OP_i[1] & OP_i[0];
+      'h342  : mcause_en   = OP_i[1] & OP_i[0];
 
       default: begin
-        to_mie      = 0;
-        to_mtvec    = 0;
-        to_mscratch = 0;
-        to_mepc     = 0;
-        to_mcause   = 0;
+        mie_en             = 0;
+        mtvec_en           = 0;
+        mscratch_en        = 0;
+        mepc_en            = 0;
+        mcause_en          = 0;
       end
     endcase
+
+    always_ff @(posedge clk_i or posedge rst_i )
+      if( rst_i )
+        mie_o <= 0;
+      else if( mie_en )
+        mie_o <= csr_write_expr;
 
 endmodule
