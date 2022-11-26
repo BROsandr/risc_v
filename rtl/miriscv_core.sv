@@ -53,7 +53,7 @@ module miriscv_core(
   logic        illegal_instr;
   logic        branch;      
   logic        jal;         
-  logic        jalr;       
+  logic [1:0]  jalr;       
   
   logic [31:0] A;
   logic [31:0] B;
