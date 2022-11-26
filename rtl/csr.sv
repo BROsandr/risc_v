@@ -24,6 +24,14 @@ module csr(
 
   logic csr_write_expr;
 
+  logic en[0:4];
+
+  assign mie_en      = en[0];
+  assign mtvec_en    = en[1];
+  assign mscratch_en = en[2];
+  assign mepc_en     = en[3];
+  assign mcause_en   = en[4];
+
   always_comb
     unique case( A_i ) inside 
       'h304  : RD_o = mie_o;
@@ -37,18 +45,50 @@ module csr(
 
   always_comb
     unique case( A_i ) inside 
-      'h304  : mie_en      = OP_i[1] & OP_i[0];
-      'h305  : mtvec_en    = OP_i[1] & OP_i[0];
-      'h340  : mscratch_en = OP_i[1] & OP_i[0]; 
-      'h341  : mepc_en     = OP_i[1] & OP_i[0];
-      'h342  : mcause_en   = OP_i[1] & OP_i[0];
+      'h304  : begin 
+        en[0]        = OP_i[1] & OP_i[0];
+        en[1]        = 0;
+        en[2]        = 0;
+        en[3]        = 0;
+        en[4]        = 0;
+      end
+
+      'h305  : begin
+        en[0]        = 0;
+        en[1]        = OP_i[1] & OP_i[0];
+        en[2]        = 0;
+        en[3]        = 0;
+        en[4]        = 0;
+      end
+
+      'h340  : begin
+        en[0]        = 0;
+        en[1]        = 0;
+        en[2]        = OP_i[1] & OP_i[0];
+        en[3]        = 0;
+        en[4]        = 0;
+      end
+      'h341  : begin
+        en[0]        = 0;
+        en[1]        = 0;
+        en[2]        = 0;
+        en[3]        = OP_i[1] & OP_i[0];
+        en[4]        = 0;
+      end
+      'h342  : begin
+        en[0]        = 0;
+        en[1]        = 0;
+        en[2]        = 0;
+        en[3]        = 0;
+        en[4]        = OP_i[1] & OP_i[0];
+      end
 
       default: begin
-        mie_en             = 0;
-        mtvec_en           = 0;
-        mscratch_en        = 0;
-        mepc_en            = 0;
-        mcause_en          = 0;
+        en[0]        = 0;
+        en[1]        = 0;
+        en[2]        = 0;
+        en[3]        = 0;
+        en[4]        = 0;
       end
     endcase
 
