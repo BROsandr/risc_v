@@ -22,7 +22,7 @@ module decoder_riscv (
   output              enpc_o,
   output  logic       INT_RST_o,
   output  logic       csr_o,
-  output  logic       CSRop_o 
+  output  logic [2:0] CSRop_o 
 );
   localparam FUNCT7_1 = 7'b0100000,
              FUNCT7_0 = 7'b0000000;
@@ -42,6 +42,8 @@ module decoder_riscv (
   assign     gpr_we_a_o = gpr_we_a & enpc_o;
 
   logic      int_buff;
+
+  assign     CSRop_o[2] = INT_i & int_buff;
 
   always_comb begin
     case( opcode )
@@ -337,8 +339,6 @@ module decoder_riscv (
     
     if( INT_i & int_buff )
       jalr_o = `JALR_MTVEC;
-
-    OP[2]                 = INT_i & int_buff;
   end
 
   always_ff @( posedge clk_i or posedge rst_i )

@@ -97,6 +97,10 @@ module miriscv_core(
   assign       WD3 = ( WD3_csr ) ? ( RD_csr ) : ( RD_mem_or_alu );
 
   logic [2:0]  CSRop;
+
+  logic [31:0] mtvec;
+
+  logic [31:0] mepc;
   
   miriscv_lsu miriscv_lsu(
     .clk_i          ( clk_i         ), // ?????????????
@@ -165,7 +169,7 @@ module miriscv_core(
 
   csr csr(
     .clk_i   ( clk_i    ),
-    .rst_i   ( rst_i    ),
+    .rst_i   ( rst_n_i    ),
     .mcause_i( mcause_i ),
     .PC_i( PC ),
     .A_i( A_csr ),

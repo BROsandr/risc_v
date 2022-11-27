@@ -5,8 +5,11 @@ module miriscv_top
 )
 (
   // clock, reset
-  input clk_i,
-  input rst_n_i
+  input         clk_i,
+  input         rst_n_i,
+
+  input  [31:0] int_req_i,
+  output [31:0] int_fin_o
 );
 
   logic  [31:0]  instr_rdata_core;
@@ -25,6 +28,11 @@ module miriscv_top
   logic  [3:0]   data_be_ram;
   logic  [31:0]  data_addr_ram;
   logic  [31:0]  data_wdata_ram;
+
+  logic  [31:0]  mie;
+  logic          INT_RST;
+  logic          interrupt;
+  logic  [31:0]  mcause;
 
   logic  data_mem_valid;
   assign data_mem_valid   = (data_addr_core >= RAM_SIZE) ?  1'b0 : 1'b1;
@@ -48,7 +56,12 @@ module miriscv_top
     .data_we_o     ( data_we_core     ),
     .data_be_o     ( data_be_core     ),
     .data_addr_o   ( data_addr_core   ),
-    .data_wdata_o  ( data_wdata_core  )
+    .data_wdata_o  ( data_wdata_core  ),
+    .INT_i( interrupt ),
+    .mcause_i( mcause ),
+
+    .INT_RST_o( INT_RST ),
+    .mie_o( mie )
   );
 
   miriscv_ram
@@ -70,5 +83,16 @@ module miriscv_top
     .data_wdata_i  ( data_wdata_ram  )
   );
 
+  interrupt_controller interrupt_controller(
+    .clk_i( clk_i ),
+    .rst_i( rst_n_i ),
+    .int_req_i( int_req_i ),
+    .mie_i( mie ),
+    .INT_RST_i( INT_RST ),
+
+    .INT_o( interrupt ),
+    .int_fin_o( int_fin_o ),
+    .mcause_o( mcause )
+  );
 
 endmodule
