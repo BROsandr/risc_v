@@ -12,7 +12,13 @@ module miriscv_core(
   output        data_we_o,
   output [3:0]  data_be_o,
   output [31:0] data_addr_o,
-  output [31:0] data_wdata_o 
+  output [31:0] data_wdata_o, 
+
+  input         INT_i,
+  input  [31:0] mcause_i,
+
+  output        INT_RST_o,
+  output [31:0] mie_o
 );
   logic [31:0] RD1;
   
@@ -89,6 +95,8 @@ module miriscv_core(
   
   logic [31:0] WD3;
   assign       WD3 = ( WD3_csr ) ? ( RD_csr ) : ( RD_mem_or_alu );
+
+  logic [2:0]  CSRop;
   
   miriscv_lsu miriscv_lsu(
     .clk_i          ( clk_i         ), // ?????????????
@@ -115,6 +123,7 @@ module miriscv_core(
   decoder_riscv decoder_riscv (
     .fetched_instr_i( RD            ),
     .lsu_stall_req_i( lsu_stall_req ),
+    .INT_i          ( INT_i         ),
     .ex_op_a_sel_o  ( ex_op_a_sel   ),      
     .ex_op_b_sel_o  ( ex_op_b_sel   ),      
     .alu_op_o       ( alu_op        ),           
@@ -127,7 +136,11 @@ module miriscv_core(
     .branch_o       ( branch        ),           
     .jal_o          ( jal           ),              
     .jalr_o         ( jalr          ),
-    .enpc_o         ( enpc          )              
+    .enpc_o         ( enpc          ),
+    .INT_RST_o      ( INT_RST_o     ),
+    .csr_o          ( WD3_csr       ),
+    .CSRop_o        ( CSRop         )
+
   );
   
   RF rf(
