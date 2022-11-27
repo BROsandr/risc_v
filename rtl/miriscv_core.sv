@@ -83,10 +83,10 @@ module miriscv_core(
   
   logic        lsu_stall_req;
 
-  logic        RD_mem_or_alu;
+  logic [31:0] RD_mem_or_alu;
   assign       RD_mem_or_alu = ( wb_src_sel ) ? ( RD_mem ) : ( Result );
 
-  logic        RD_csr;
+  logic [31:0] RD_csr;
 
   logic        WD3_csr;
 
