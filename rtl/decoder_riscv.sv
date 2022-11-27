@@ -10,7 +10,7 @@ module decoder_riscv (
   output  reg         mem_req_o,          
   output  reg         mem_we_o,           
   output  reg [2:0]   mem_size_o,         
-  output  reg         gpr_we_a_o,         
+  output  wire        gpr_we_a_o,         
   output  reg         wb_src_sel_o,       
   output  reg         illegal_instr_o,    
   output  reg         branch_o,           
@@ -36,6 +36,9 @@ module decoder_riscv (
 
   assign     enpc_o = !lsu_stall_req_i;
 
+  logic      gpr_we_a;
+  assign     gpr_we_a_o = gpr_we_a & enpc_o;
+
   always_comb
     case( opcode )
       { `LOAD_OPCODE, 2'b11 }: begin
@@ -45,7 +48,7 @@ module decoder_riscv (
         mem_req_o         = 1;
         mem_we_o          = 0;
         mem_size_o        = funct3;
-        gpr_we_a_o        = 1;
+        gpr_we_a          = 1;
         wb_src_sel_o      = `WB_LSU_DATA;
         illegal_instr_o   = 0;
         branch_o          = 0;
@@ -69,7 +72,7 @@ module decoder_riscv (
         mem_req_o         = 0;
         mem_we_o          = 0;
         mem_size_o        = `LDST_B;
-        gpr_we_a_o        = 0;
+        gpr_we_a          = 0;
         wb_src_sel_o      = `WB_LSU_DATA;
         illegal_instr_o   = 0;
         branch_o          = 0;
@@ -84,7 +87,7 @@ module decoder_riscv (
         mem_req_o         = 0;
         mem_we_o          = 0;
         mem_size_o        = `LDST_B;
-        gpr_we_a_o        = 1;
+        gpr_we_a          = 1;
         wb_src_sel_o      = `WB_EX_RESULT;
         illegal_instr_o   = 0;
         branch_o          = 0;
@@ -111,7 +114,7 @@ module decoder_riscv (
         mem_req_o         = 0;
         mem_we_o          = 0;
         mem_size_o        = `LDST_B;
-        gpr_we_a_o        = 1;
+        gpr_we_a          = 1;
         wb_src_sel_o      = `WB_EX_RESULT;
         illegal_instr_o   = 0;
         branch_o          = 0;
@@ -126,7 +129,7 @@ module decoder_riscv (
         mem_req_o         = 1;
         mem_we_o          = 1;
         mem_size_o        = funct3;
-        gpr_we_a_o        = 0;
+        gpr_we_a          = 0;
         wb_src_sel_o      = `WB_LSU_DATA;
         illegal_instr_o   = 0;
         branch_o          = 0;
@@ -148,7 +151,7 @@ module decoder_riscv (
         mem_req_o         = 0;
         mem_we_o          = 0;
         mem_size_o        = `LDST_B;
-        gpr_we_a_o        = 1;
+        gpr_we_a          = 1;
         wb_src_sel_o      = `WB_EX_RESULT;
         illegal_instr_o   = 0;
         branch_o          = 0;
@@ -174,7 +177,7 @@ module decoder_riscv (
         mem_req_o         = 0;
         mem_we_o          = 0;
         mem_size_o        = `LDST_B;
-        gpr_we_a_o        = 1;
+        gpr_we_a          = 1;
         wb_src_sel_o      = `WB_EX_RESULT;
         illegal_instr_o   = 0;
         branch_o          = 0;
@@ -189,7 +192,7 @@ module decoder_riscv (
         mem_req_o         = 0;
         mem_we_o          = 0;
         mem_size_o        = `LDST_B;
-        gpr_we_a_o        = 0;
+        gpr_we_a          = 0;
         wb_src_sel_o      = `WB_EX_RESULT;
         illegal_instr_o   = 0;
         branch_o          = 1;
@@ -210,7 +213,7 @@ module decoder_riscv (
         mem_req_o         = 0;
         mem_we_o          = 0;
         mem_size_o        = `LDST_B;
-        gpr_we_a_o        = 1;
+        gpr_we_a          = 1;
         wb_src_sel_o      = `WB_EX_RESULT;
         illegal_instr_o   = 0;
         branch_o          = 0;
@@ -229,7 +232,7 @@ module decoder_riscv (
         mem_req_o         = 0;
         mem_we_o          = 0;
         mem_size_o        = `LDST_B;
-        gpr_we_a_o        = 1;
+        gpr_we_a          = 1;
         wb_src_sel_o      = `WB_EX_RESULT;
         illegal_instr_o   = 0;
         branch_o          = 0;
@@ -244,7 +247,7 @@ module decoder_riscv (
         mem_req_o         = 0;
         mem_we_o          = 0;
         mem_size_o        = `LDST_B;
-        gpr_we_a_o        = 0;
+        gpr_we_a          = 0;
         wb_src_sel_o      = `WB_EX_RESULT;
         illegal_instr_o   = 0;
         branch_o          = 0;
@@ -264,7 +267,7 @@ module decoder_riscv (
         mem_req_o         = 0;
         mem_we_o          = 0;
         mem_size_o        = `LDST_B;
-        gpr_we_a_o        = 0;
+        gpr_we_a          = 0;
         wb_src_sel_o      = `WB_EX_RESULT;
         illegal_instr_o   = 1;
         branch_o          = 0;
