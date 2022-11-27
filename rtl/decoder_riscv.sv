@@ -293,8 +293,10 @@ module decoder_riscv (
 
         unique case( funct3 ) inside
           3'b000 : begin
-            jalr_o        = `JALR_MEPC;
-            INT_RST_o     = 1;
+            if( fetched_instr_i[31:20] == 12'b0011000_00010 ) begin
+              jalr_o        = `JALR_MEPC;
+              INT_RST_o     = 1;
+            end
           end
 
           3'b001 : begin
@@ -332,8 +334,11 @@ module decoder_riscv (
         jalr_o            = 0;
       end
     endcase
+    
     if( INT_i & int_buff )
       jalr_o = `JALR_MTVEC;
+
+    OP[2]                 = INT_i & int_buff;
   end
 
   always_ff @( posedge clk_i or posedge rst_i )
