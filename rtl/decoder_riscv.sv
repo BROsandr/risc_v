@@ -1,6 +1,9 @@
 `include "../common/defines_riscv.v"
 
 module decoder_riscv (
+  input               clk_i,
+  input               rst_i,
+
   input       [31:0]  fetched_instr_i,
   input               lsu_stall_req_i,
   input               INT_i,
@@ -24,7 +27,6 @@ module decoder_riscv (
   localparam FUNCT7_1 = 7'b0100000,
              FUNCT7_0 = 7'b0000000;
 
-
   wire [6:0] opcode;
   assign     opcode = fetched_instr_i[6:0];
   
@@ -39,7 +41,9 @@ module decoder_riscv (
   logic      gpr_we_a;
   assign     gpr_we_a_o = gpr_we_a & enpc_o;
 
-  always_comb
+  logic      int_buff;
+
+  always_comb begin
     case( opcode )
       { `LOAD_OPCODE, 2'b11 }: begin
         ex_op_a_sel_o     = `OP_A_RS1;   
@@ -54,6 +58,9 @@ module decoder_riscv (
         branch_o          = 0;
         jal_o             = 0;
         jalr_o            = 0;
+        INT_RST_o         = 0;
+        csr_o             = 0;
+        CSRop_o           = 0;
         
         if( funct3 != `LDST_B  &&
             funct3 != `LDST_H  &&
@@ -78,6 +85,9 @@ module decoder_riscv (
         branch_o          = 0;
         jal_o             = 0;
         jalr_o            = 0;
+        INT_RST_o         = 0;
+        csr_o             = 0;
+        CSRop_o           = 0;
       end
       
       { `OP_IMM_OPCODE, 2'b11 }: begin
@@ -93,6 +103,9 @@ module decoder_riscv (
         branch_o          = 0;
         jal_o             = 0;
         jalr_o            = 0;    
+        INT_RST_o         = 0;
+        csr_o             = 0;
+        CSRop_o           = 0;
         
         if( alu_op_o == `ALU_SRL && funct7 == FUNCT7_1 )
             alu_op_o          = { 2'b01, funct3 };  
@@ -120,6 +133,9 @@ module decoder_riscv (
         branch_o          = 0;
         jal_o             = 0;
         jalr_o            = 0;
+        INT_RST_o         = 0;
+        csr_o             = 0;
+        CSRop_o           = 0;
       end  
       
       { `STORE_OPCODE, 2'b11 }: begin
@@ -135,6 +151,9 @@ module decoder_riscv (
         branch_o          = 0;
         jal_o             = 0;
         jalr_o            = 0;
+        INT_RST_o         = 0;
+        csr_o             = 0;
+        CSRop_o           = 0;
         
         if( funct3 != `LDST_B  &&
             funct3 != `LDST_H  &&
@@ -157,6 +176,9 @@ module decoder_riscv (
         branch_o          = 0;
         jal_o             = 0;
         jalr_o            = 0;
+        INT_RST_o         = 0;
+        csr_o             = 0;
+        CSRop_o           = 0;
         
         if( funct7 == FUNCT7_1 )
           alu_op_o          = { 2'b01, funct3 };
@@ -183,6 +205,9 @@ module decoder_riscv (
         branch_o          = 0;
         jal_o             = 0;
         jalr_o            = 0;
+        INT_RST_o         = 0;
+        csr_o             = 0;
+        CSRop_o           = 0;
       end  
            
       { `BRANCH_OPCODE, 2'b11 }: begin
@@ -198,6 +223,9 @@ module decoder_riscv (
         branch_o          = 1;
         jal_o             = 0;
         jalr_o            = 0;
+        INT_RST_o         = 0;
+        csr_o             = 0;
+        CSRop_o           = 0;
         
         if( funct3 == 3'b011 ||
             funct3 == 3'b010 ) begin
@@ -219,6 +247,9 @@ module decoder_riscv (
         branch_o          = 0;
         jal_o             = 0;
         jalr_o            = 1;
+        INT_RST_o         = 0;
+        csr_o             = 0;
+        CSRop_o           = 0;
         
         if( funct3 != 3'b000 ) begin
           illegal_instr_o   = 1;
@@ -238,10 +269,13 @@ module decoder_riscv (
         branch_o          = 0;
         jal_o             = 1;
         jalr_o            = 0;
+        INT_RST_o         = 0;
+        csr_o             = 0;
+        CSRop_o           = 0;
       end    
       
       { `SYSTEM_OPCODE, 2'b11 }: begin
-        ex_op_a_sel_o     = `OP_A_CURR_PC;   
+        ex_op_a_sel_o     = `OP_A_RS1;
         ex_op_b_sel_o     = `OP_B_INCR;
         alu_op_o          = `ALU_ADD;
         mem_req_o         = 0;
@@ -253,11 +287,34 @@ module decoder_riscv (
         branch_o          = 0;
         jal_o             = 0;
         jalr_o            = 0;   
+        INT_RST_o         = 0;
+        csr_o             = 0;
+        CSRop_o           = 0;
 
-        if( fetched_instr_i[31:7] == { 25{ 1'b0 } } || 
-            fetched_instr_i[31:7] == { { 11{ 1'b0 } }, 1'b1 } ) begin
-          illegal_instr_o   = 1;
-        end 
+        unique case( funct3 ) inside
+          3'b000 : begin
+            jalr_o        = `JALR_MEPC;
+            INT_RST_o     = 1;
+          end
+
+          3'b001 : begin
+            csr_o         = 1;
+            CSRop_o       = 1;
+          end
+          
+          3'b010 : begin
+            csr_o         = 1;
+            CSRop_o       = 3;
+          end
+
+          3'b011 : begin
+            csr_o         = 1;
+            CSRop_o       = 2;
+          end
+
+          default: 
+            illegal_instr_o = 1;
+        endcase
       end
 
       default: begin
@@ -275,5 +332,14 @@ module decoder_riscv (
         jalr_o            = 0;
       end
     endcase
+    if( INT_i & int_buff )
+      jalr_o = `JALR_MTVEC;
+  end
+
+  always_ff @( posedge clk_i or posedge rst_i )
+    if( rst_i ) 
+      int_buff <= 0;
+    else 
+      int_buff <= ~INT_i;
 
 endmodule
