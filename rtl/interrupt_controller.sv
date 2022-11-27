@@ -29,7 +29,7 @@ module interrupt_controller(
       int_befor_or[i] = ( mie_i[i] & int_req_i[i] ) & interrupt_counter_decoded[i];
 
   always_comb
-    for( int i = 0; i < 32; ++i )
+    for( int i = 0; i < 3; ++i )
       int_fin_o[i] = int_befor_or[i] & INT_RST_i;
 
   always_ff @( posedge clk_i or posedge rst_i )
