@@ -13,6 +13,14 @@ module csr(
   output logic [31:0] RD_o
 );
 
+  localparam [11:0] A_table[0:4] = {
+      'h304,
+      'h305,
+      'h340,
+      'h341,
+      'h342 
+  };
+
   logic        mscratch;
   logic        mcause;
 
@@ -43,9 +51,9 @@ module csr(
       default: RD_o = 0;
     endcase
 
-    always_comb
-      for( int i = 0; i < 5; ++i )
-        en[i] = ( A_i == i ) ? ( OP_i[1] & OP_i[0] ) : ( 0 );
+  always_comb
+    for( int i = 0; i < 5; ++i )
+      en[i] = ( A_i == A_table[i] ) ? ( OP_i[1] & OP_i[0] ) : ( 0 );
 
     always_comb
       unique case( OP_i[1:0] ) inside
