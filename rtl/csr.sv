@@ -38,7 +38,7 @@ module csr(
       'h305  : RD_o = mtvec_o;
       'h340  : RD_o = mscratch; 
       'h341  : RD_o = mepc_o;
-      'h342  : RD_o = mcause_o;
+      'h342  : RD_o = mcause;
 
       default: RD_o = 0;
     endcase
