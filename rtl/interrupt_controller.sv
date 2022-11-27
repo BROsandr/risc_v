@@ -35,8 +35,8 @@ module interrupt_controller(
       int_fin_o[i] = int_befor_or[i] & INT_RST_i;
   end
 
-  always_ff @( posedge clk_i or posedge rst_i )
-    if( rst_i )
+  always_ff @( posedge clk_i or posedge rst_i or posedge INT_RST_i )
+    if( rst_i || INT_RST_i )
       interrupt_counter <= 0;
     else if( !int_or )
       interrupt_counter <= interrupt_counter + 1;
