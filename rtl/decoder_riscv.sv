@@ -1,9 +1,6 @@
 `include "../common/defines_riscv.v"
 
 module decoder_riscv (
-  input               clk_i,
-  input               rst_i,
-
   input       [31:0]  fetched_instr_i,
   input               lsu_stall_req_i,
   input               INT_i,
@@ -43,7 +40,7 @@ module decoder_riscv (
 
   logic      int_buff;
 
-  assign     CSRop_o[2] = INT_i & int_buff;
+  assign     CSRop_o[2] = INT_i;
 
   always_comb begin
     case( opcode )
@@ -337,14 +334,8 @@ module decoder_riscv (
       end
     endcase
     
-    if( INT_i & int_buff )
+    if( INT_i )
       jalr_o = `JALR_MTVEC;
   end
-
-  always_ff @( posedge clk_i or posedge rst_i )
-    if( rst_i ) 
-      int_buff <= 0;
-    else 
-      int_buff <= ~INT_i;
 
 endmodule
