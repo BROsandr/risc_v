@@ -13,7 +13,7 @@ module interrupt_controller(
   logic [4:0]  interrupt_counter;
   logic [31:0] interrupt_counter_decoded;
 
-  logic [2:0]  int_befor_or;
+  logic [31:0] int_befor_or;
 
   logic        int_or;
   assign       int_or = |int_befor_or;
@@ -25,13 +25,13 @@ module interrupt_controller(
       interrupt_counter_decoded[i] = ( interrupt_counter == i ) ? ( 1 ) : ( 0 );
 
   always_comb
-    for( int i = 0; i < 3; ++i )
+    for( int i = 0; i < 32; ++i )
       int_befor_or[i] = ( mie_i[i] & int_req_i[i] ) & interrupt_counter_decoded[i];
 
   always_comb begin
     for( int i = 0; i < 32; ++i )
       int_fin_o[i] = 0;
-    for( int i = 0; i < 3; ++i )
+    for( int i = 0; i < 32; ++i )
       int_fin_o[i] = int_befor_or[i] & INT_RST_i;
   end
 
