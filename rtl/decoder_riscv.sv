@@ -38,7 +38,8 @@ module decoder_riscv (
   logic      gpr_we_a;
   assign     gpr_we_a_o = gpr_we_a & enpc_o;
 
-  logic      int_buff;
+  logic      mem_req;
+  assign     mem_req_o  = mem_req & !INT_i; 
 
   assign     CSRop_o[2] = INT_i;
 
@@ -48,7 +49,7 @@ module decoder_riscv (
         ex_op_a_sel_o     = `OP_A_RS1;   
         ex_op_b_sel_o     = `OP_B_IMM_I;
         alu_op_o          = `ALU_ADD;
-        mem_req_o         = 1;
+        mem_req           = 1;
         mem_we_o          = 0;
         mem_size_o        = funct3;
         gpr_we_a          = 1;
@@ -75,7 +76,7 @@ module decoder_riscv (
         ex_op_a_sel_o     = `OP_A_RS1;   
         ex_op_b_sel_o     = `OP_B_IMM_I;
         alu_op_o          = `ALU_ADD;
-        mem_req_o         = 0;
+        mem_req           = 0;
         mem_we_o          = 0;
         mem_size_o        = `LDST_B;
         gpr_we_a          = 0;
@@ -93,7 +94,7 @@ module decoder_riscv (
         ex_op_a_sel_o     = `OP_A_RS1;   
         ex_op_b_sel_o     = `OP_B_IMM_I;
         alu_op_o          = { 2'b00, funct3 };
-        mem_req_o         = 0;
+        mem_req           = 0;
         mem_we_o          = 0;
         mem_size_o        = `LDST_B;
         gpr_we_a          = 1;
@@ -123,7 +124,7 @@ module decoder_riscv (
         ex_op_a_sel_o     = `OP_A_CURR_PC;   
         ex_op_b_sel_o     = `OP_B_IMM_U;
         alu_op_o          = `ALU_ADD;
-        mem_req_o         = 0;
+        mem_req           = 0;
         mem_we_o          = 0;
         mem_size_o        = `LDST_B;
         gpr_we_a          = 1;
@@ -141,7 +142,7 @@ module decoder_riscv (
         ex_op_a_sel_o     = `OP_A_RS1;   
         ex_op_b_sel_o     = `OP_B_IMM_S;
         alu_op_o          = `ALU_ADD;
-        mem_req_o         = 1;
+        mem_req           = 1;
         mem_we_o          = 1;
         mem_size_o        = funct3;
         gpr_we_a          = 0;
@@ -166,7 +167,7 @@ module decoder_riscv (
         ex_op_a_sel_o     = `OP_A_RS1;   
         ex_op_b_sel_o     = `OP_B_RS2;
         alu_op_o          = { 2'b00, funct3 };
-        mem_req_o         = 0;
+        mem_req           = 0;
         mem_we_o          = 0;
         mem_size_o        = `LDST_B;
         gpr_we_a          = 1;
@@ -195,7 +196,7 @@ module decoder_riscv (
         ex_op_a_sel_o     = `OP_A_ZERO ;   
         ex_op_b_sel_o     = `OP_B_IMM_U;
         alu_op_o          = `ALU_ADD;
-        mem_req_o         = 0;
+        mem_req           = 0;
         mem_we_o          = 0;
         mem_size_o        = `LDST_B;
         gpr_we_a          = 1;
@@ -213,7 +214,7 @@ module decoder_riscv (
         ex_op_a_sel_o     = `OP_A_RS1;   
         ex_op_b_sel_o     = `OP_B_RS2;
         alu_op_o          = { 2'b11, funct3 };
-        mem_req_o         = 0;
+        mem_req           = 0;
         mem_we_o          = 0;
         mem_size_o        = `LDST_B;
         gpr_we_a          = 0;
@@ -237,7 +238,7 @@ module decoder_riscv (
         ex_op_a_sel_o     = `OP_A_CURR_PC;   
         ex_op_b_sel_o     = `OP_B_INCR;
         alu_op_o          = `ALU_ADD;
-        mem_req_o         = 0;
+        mem_req           = 0;
         mem_we_o          = 0;
         mem_size_o        = `LDST_B;
         gpr_we_a          = 1;
@@ -259,7 +260,7 @@ module decoder_riscv (
         ex_op_a_sel_o     = `OP_A_CURR_PC;   
         ex_op_b_sel_o     = `OP_B_INCR;
         alu_op_o          = `ALU_ADD;
-        mem_req_o         = 0;
+        mem_req           = 0;
         mem_we_o          = 0;
         mem_size_o        = `LDST_B;
         gpr_we_a          = 1;
@@ -277,7 +278,7 @@ module decoder_riscv (
         ex_op_a_sel_o     = `OP_A_RS1;
         ex_op_b_sel_o     = `OP_B_INCR;
         alu_op_o          = `ALU_ADD;
-        mem_req_o         = 0;
+        mem_req           = 0;
         mem_we_o          = 0;
         mem_size_o        = `LDST_B;
         gpr_we_a          = 0;
@@ -322,7 +323,7 @@ module decoder_riscv (
         ex_op_a_sel_o     = `OP_A_CURR_PC;   
         ex_op_b_sel_o     = `OP_B_IMM_U;
         alu_op_o          = `ALU_ADD;
-        mem_req_o         = 0;
+        mem_req           = 0;
         mem_we_o          = 0;
         mem_size_o        = `LDST_B;
         gpr_we_a          = 0;
