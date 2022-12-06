@@ -55,43 +55,43 @@ module csr(
     for( int i = 0; i < 5; ++i )
       en[i] = ( A_i == A_table[i] ) ? ( OP_i[1] & OP_i[0] ) : ( 0 );
 
-    always_comb
-      unique case( OP_i[1:0] ) inside
-        0      : csr_write_expr = 0;
-        1      : csr_write_expr = WD_i;
-        2      : csr_write_expr = RD_o & ~WD_i;
-        3      : csr_write_expr = RD_o |  WD_i;
+  always_comb
+    unique case( OP_i[1:0] ) inside
+      0      : csr_write_expr = 0;
+      1      : csr_write_expr = WD_i;
+      2      : csr_write_expr = RD_o & ~WD_i;
+      3      : csr_write_expr = RD_o |  WD_i;
 
-        default: csr_write_expr = 0;
-      endcase
+      default: csr_write_expr = 0;
+    endcase
 
-    always_ff @(posedge clk_i or posedge rst_i )
-      if( rst_i )
-        mie_o <= 0;
-      else if( mie_en )
-        mie_o <= csr_write_expr;
+  always_ff @( posedge clk_i or posedge rst_i )
+    if( rst_i )
+      mie_o <= 0;
+    else if( mie_en )
+      mie_o <= csr_write_expr;
 
-    always_ff @(posedge clk_i or posedge rst_i )
-      if( rst_i )
-        mtvec_o <= 0;
-      else if( mtvec_en )
-        mtvec_o <= csr_write_expr;
+  always_ff @( posedge clk_i or posedge rst_i )
+    if( rst_i )
+      mtvec_o <= 0;
+    else if( mtvec_en )
+      mtvec_o <= csr_write_expr;
 
-    always_ff @(posedge clk_i or posedge rst_i )
-      if( rst_i )
-        mscratch <= 0;
-      else if( mscratch_en )
-        mscratch <= csr_write_expr;
+  always_ff @( posedge clk_i or posedge rst_i )
+    if( rst_i )
+      mscratch <= 0;
+    else if( mscratch_en )
+      mscratch <= csr_write_expr;
 
-    always_ff @(posedge clk_i or posedge rst_i )
-      if( rst_i )
-        mepc_o <= 0;
-      else if( mepc_en | OP_i[2] )
-        mepc_o <= ( OP_i[2] ) ? ( PC_i ) : ( csr_write_expr );
+  always_ff @( posedge clk_i or posedge rst_i )
+    if( rst_i )
+      mepc_o <= 0;
+    else if( mepc_en | OP_i[2] )
+      mepc_o <= ( OP_i[2] ) ? ( PC_i ) : ( csr_write_expr );
 
-    always_ff @(posedge clk_i or posedge rst_i )
-      if( rst_i )
-        mcause <= 0;
-      else if( mcause_en | OP_i[2] )
-        mcause <= ( OP_i[2] ) ? ( mcause_i ) : ( csr_write_expr );
+  always_ff @( posedge clk_i or posedge rst_i )
+    if( rst_i )
+      mcause <= 0;
+    else if( mcause_en | OP_i[2] )
+      mcause <= ( OP_i[2] ) ? ( mcause_i ) : ( csr_write_expr );
 endmodule
