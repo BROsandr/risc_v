@@ -90,7 +90,7 @@ module miriscv_core(
 
   logic        WD3_csr;
 
-  logic        A_csr;
+  logic [11:0] A_csr;
   assign       A_csr = instr[31:20];
   
   logic [31:0] WD3;
