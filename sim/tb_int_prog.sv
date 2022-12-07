@@ -58,7 +58,7 @@ module tb_miriscv_top();
       @( posedge clk ); 
       
       #500;
-      interrupt( 19 );
+      interrupt( 5 );
       #2000;
       $finish;
     end
