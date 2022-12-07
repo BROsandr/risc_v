@@ -21,8 +21,8 @@ module csr(
       'h342 
   };
 
-  logic        mscratch;
-  logic        mcause;
+  logic [31:0] mscratch;
+  logic [31:0] mcause;
 
   logic        mie_en;
   logic        mtvec_en;
