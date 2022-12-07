@@ -45,8 +45,6 @@ module tb_miriscv_top();
   endtask  
 
   task interrupt( input int num );  
-    dut.core.csr.mie_o[num] <= 1;
-    dut.core.csr.mtvec_o <= 10;
     #2 int_req[num] <= 1;
   endtask
     
