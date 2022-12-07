@@ -302,16 +302,19 @@ module decoder_riscv (
           3'b001 : begin
             csr_o         = 1;
             CSRop_o[1:0]  = 1;
+            gpr_we_a      = 1;
           end
           
           3'b010 : begin
             csr_o         = 1;
             CSRop_o[1:0]  = 3;
+            gpr_we_a      = 1;
           end
 
           3'b011 : begin
             csr_o         = 1;
             CSRop_o[1:0]  = 2;
+            gpr_we_a      = 1;
           end
 
           default: 
