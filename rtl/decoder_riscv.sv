@@ -60,7 +60,7 @@ module decoder_riscv (
         jalr_o            = 0;
         INT_RST_o         = 0;
         csr_o             = 0;
-        CSRop_o           = 0;
+        CSRop_o[1:0]      = 0;
         
         if( funct3 != `LDST_B  &&
             funct3 != `LDST_H  &&
@@ -87,7 +87,7 @@ module decoder_riscv (
         jalr_o            = 0;
         INT_RST_o         = 0;
         csr_o             = 0;
-        CSRop_o           = 0;
+        CSRop_o[1:0]      = 0;
       end
       
       { `OP_IMM_OPCODE, 2'b11 }: begin
@@ -105,7 +105,7 @@ module decoder_riscv (
         jalr_o            = 0;    
         INT_RST_o         = 0;
         csr_o             = 0;
-        CSRop_o           = 0;
+        CSRop_o[1:0]      = 0;
         
         if( alu_op_o == `ALU_SRL && funct7 == FUNCT7_1 )
             alu_op_o          = { 2'b01, funct3 };  
@@ -135,7 +135,7 @@ module decoder_riscv (
         jalr_o            = 0;
         INT_RST_o         = 0;
         csr_o             = 0;
-        CSRop_o           = 0;
+        CSRop_o[1:0]      = 0;
       end  
       
       { `STORE_OPCODE, 2'b11 }: begin
@@ -153,7 +153,7 @@ module decoder_riscv (
         jalr_o            = 0;
         INT_RST_o         = 0;
         csr_o             = 0;
-        CSRop_o           = 0;
+        CSRop_o[1:0]      = 0;
         
         if( funct3 != `LDST_B  &&
             funct3 != `LDST_H  &&
@@ -178,7 +178,7 @@ module decoder_riscv (
         jalr_o            = 0;
         INT_RST_o         = 0;
         csr_o             = 0;
-        CSRop_o           = 0;
+        CSRop_o[1:0]      = 0;
         
         if( funct7 == FUNCT7_1 )
           alu_op_o          = { 2'b01, funct3 };
@@ -207,7 +207,7 @@ module decoder_riscv (
         jalr_o            = 0;
         INT_RST_o         = 0;
         csr_o             = 0;
-        CSRop_o           = 0;
+        CSRop_o[1:0]      = 0;
       end  
            
       { `BRANCH_OPCODE, 2'b11 }: begin
@@ -225,7 +225,7 @@ module decoder_riscv (
         jalr_o            = 0;
         INT_RST_o         = 0;
         csr_o             = 0;
-        CSRop_o           = 0;
+        CSRop_o[1:0]      = 0;
         
         if( funct3 == 3'b011 ||
             funct3 == 3'b010 ) begin
@@ -249,7 +249,7 @@ module decoder_riscv (
         jalr_o            = 1;
         INT_RST_o         = 0;
         csr_o             = 0;
-        CSRop_o           = 0;
+        CSRop_o[1:0]      = 0;
         
         if( funct3 != 3'b000 ) begin
           illegal_instr_o   = 1;
@@ -271,7 +271,7 @@ module decoder_riscv (
         jalr_o            = 0;
         INT_RST_o         = 0;
         csr_o             = 0;
-        CSRop_o           = 0;
+        CSRop_o[1:0]      = 0;
       end    
       
       { `SYSTEM_OPCODE, 2'b11 }: begin
@@ -289,7 +289,7 @@ module decoder_riscv (
         jalr_o            = 0;   
         INT_RST_o         = 0;
         csr_o             = 0;
-        CSRop_o           = 0;
+        CSRop_o[1:0]      = 0;
 
         unique case( funct3 ) inside
           3'b000 : begin
@@ -301,17 +301,17 @@ module decoder_riscv (
 
           3'b001 : begin
             csr_o         = 1;
-            CSRop_o       = 1;
+            CSRop_o[1:0]  = 1;
           end
           
           3'b010 : begin
             csr_o         = 1;
-            CSRop_o       = 3;
+            CSRop_o[1:0]  = 3;
           end
 
           3'b011 : begin
             csr_o         = 1;
-            CSRop_o       = 2;
+            CSRop_o[1:0]  = 2;
           end
 
           default: 
