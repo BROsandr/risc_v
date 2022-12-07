@@ -52,6 +52,8 @@ module tb_miriscv_top();
     
   initial
     begin
+      for( int i = 0; i < 32; ++i ) 
+        int_req[i] <= 0;
       // input_number( number, 2 );
       @( posedge clk );
       reset; 
