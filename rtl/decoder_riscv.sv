@@ -293,10 +293,8 @@ module decoder_riscv (
 
         unique case( funct3 ) inside
           3'b000 : begin
-            if( fetched_instr_i[31:20] == 12'b0011000_00010 ) begin
-              jalr_o        = `JALR_MEPC;
-              INT_RST_o     = 1;
-            end
+            jalr_o        = `JALR_MEPC;
+            INT_RST_o     = 1;
           end
 
           3'b001 : begin
