@@ -53,7 +53,7 @@ module csr(
 
   always_comb
     for( int i = 0; i < 5; ++i )
-      en[i] = ( A_i == A_table[i] ) ? ( OP_i[1] & OP_i[0] ) : ( 0 );
+      en[i] = ( A_i == A_table[i] ) ? ( OP_i[1] | OP_i[0] ) : ( 0 );
 
   always_comb
     unique case( OP_i[1:0] ) inside
