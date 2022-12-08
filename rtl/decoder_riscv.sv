@@ -36,7 +36,7 @@ module decoder_riscv (
   assign     enpc_o = !lsu_stall_req_i;
 
   logic      gpr_we_a;
-  assign     gpr_we_a_o = gpr_we_a & enpc_o;
+  assign     gpr_we_a_o = gpr_we_a & enpc_o & !INT_i;
 
   logic      mem_req;
   assign     mem_req_o  = mem_req & !INT_i; 
