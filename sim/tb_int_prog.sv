@@ -55,7 +55,13 @@ module tb_miriscv_top();
         int_req <= ~int_fin & int_req;
     end
 
+  initial begin
+    @( negedge rst_n );
+    forever begin
+      @( dut.core.rf.registers[28] );
+      $display( "%d interrupt detected", dut.core.rf.registers[28] );
     end
+  end
     
   initial
     begin
@@ -68,6 +74,10 @@ module tb_miriscv_top();
       
       #500;
       interrupt( 5 );
+      #100;
+      interrupt( 3 );
+      #500;
+      interrupt( 2 );
       #2000;
       $finish;
     end
