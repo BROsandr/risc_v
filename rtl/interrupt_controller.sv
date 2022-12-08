@@ -51,6 +51,6 @@ module interrupt_controller(
 
   assign INT_o = int_or ^ int_reg;
 
-  assign mcause_o = { 27'h0_000_000, interrupt_counter };
+  assign mcause_o = { 27'h4_000_000, interrupt_counter };
 
 endmodule
