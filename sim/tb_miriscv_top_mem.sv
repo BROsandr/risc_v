@@ -14,7 +14,7 @@ module tb_miriscv_top_mem();
   
   miriscv_top #(
     .RAM_SIZE       ( RAM_SIZE           ),
-    .RAM_INIT_FILE  ( "prog_mem_test.txt")
+    .RAM_INIT_FILE  ( "../ram/prog_mem_test.txt")
   ) dut (
     .clk_i          ( clk                ),
     .rst_n_i        ( rst_n              )
