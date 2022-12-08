@@ -34,7 +34,7 @@ module interrupt_controller(
   end
 
   always_ff @( posedge clk_i or posedge rst_i )
-    if( rst_i || INT_RST_i )
+    if( rst_i )
       interrupt_counter <= 0;
     else if( INT_RST_i )
       interrupt_counter <= 0;
