@@ -45,6 +45,7 @@ module tb_miriscv_top();
   endtask  
 
   task interrupt( input int num );  
+    // simulation int trigger at random time
     #2 int_req[num] <= 1;
   endtask
 
