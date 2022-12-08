@@ -50,8 +50,11 @@ module tb_miriscv_top();
 
   initial
     forever begin
-      @( int_fin );
-      int_req <= int_fin & int_req;
+      @( posedge clk );
+      if( int_fin )
+        int_req <= ~int_fin & int_req;
+    end
+
     end
     
   initial
