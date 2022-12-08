@@ -47,6 +47,12 @@ module tb_miriscv_top();
   task interrupt( input int num );  
     #2 int_req[num] <= 1;
   endtask
+
+  initial
+    forever begin
+      @( int_fin );
+      int_req <= int_fin & int_req;
+    end
     
   initial
     begin
