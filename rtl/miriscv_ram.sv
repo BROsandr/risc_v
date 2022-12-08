@@ -24,6 +24,11 @@ module miriscv_ram
   reg [31:0]    mem [0:RAM_SIZE/4-1];
   reg [31:0]    data_int;
 
+  logic         data_req_buff;
+
+  logic         data_req;
+  assign        data_req  = data_req_buff & data_req_i;
+
   //Init RAM
   integer ram_index;
 
@@ -39,13 +44,28 @@ module miriscv_ram
   //Instruction port
   assign instr_rdata_o = mem[(instr_addr_i % RAM_SIZE) / 4];
 
-  always@(posedge clk_i) begin
-    if(rst_n_i) begin
-      data_rdata_o  <= 32'b0;
-    end
-    else if(data_req_i) begin
+  always_ff @( posedge clk_i or posedge rst_n_i )
+    if( rst_n_i )
+      data_req_buff <= 1;
+    else if( !data_req_buff )
+      data_req_buff <= 1;
+    else
+      data_req_buff <= !data_req_i;
+
+  // always_ff @( posedge clk_i or posedge rst_n_i )
+  //   if( rst_n_i )
+  //     data_req_buff <= 0;
+  //   else
+  //     data_req_buff <= data_req_i; 
+
+  always_ff @( posedge clk_i or posedge rst_n_i )
+    if( rst_n_i )
+      data_rdata_o <= 32'b0;
+    else if( data_req )
       data_rdata_o <= mem[(data_addr_i  % RAM_SIZE) / 4];
 
+  always@(posedge clk_i)
+    if(data_req) begin
       if(data_we_i && data_be_i[0])
         mem [data_addr_i[31:2]] [7:0]  <= data_wdata_i[7:0];
 
@@ -59,7 +79,6 @@ module miriscv_ram
         mem [data_addr_i[31:2]] [31:24] <= data_wdata_i[31:24];
 
     end
-  end
 
 
 endmodule
