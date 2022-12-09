@@ -291,7 +291,7 @@ module decoder_riscv (
         csr_o             = 0;
         CSRop_o[1:0]      = 0;
 
-        unique case( funct3 ) inside
+        case( funct3 ) inside
           3'b000 : begin
             jalr_o        = `JALR_MEPC;
             INT_RST_o     = 1;

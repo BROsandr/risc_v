@@ -189,7 +189,7 @@ module miriscv_core(
       PC <= 0;
     else
       if( enpc )
-        unique case( jalr ) inside 
+        case( jalr ) inside 
           0      : PC <= PC + add_to_PC;
           1      : PC <= RD1 + imm_I;
           2      : PC <= mepc;

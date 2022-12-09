@@ -56,9 +56,9 @@ module miriscv_lsu
   
   // load
   always_comb
-    unique case( lsu_size_i ) inside
+    case( lsu_size_i ) inside
       `LDST_B, `LDST_BU: 
-        unique case( lsu_byte_offset )
+        case( lsu_byte_offset )
           2'b00  : begin
             data_be_o  = 4'b0001;
             lsu_data_o = ( lsu_size_i == `LDST_B ) ? ( { { 24{data_rdata_i[7]} }, data_rdata_i[7:0] } ) : 
@@ -90,7 +90,7 @@ module miriscv_lsu
         endcase
         
       `LDST_H, `LDST_HU: 
-        unique case( lsu_byte_offset )
+        case( lsu_byte_offset )
           2'b00  : begin
             data_be_o  = 4'b0011;
             lsu_data_o = ( lsu_size_i == `LDST_H ) ? ( {{16{data_rdata_i[15]}}, data_rdata_i[15:0]} ) :
@@ -122,7 +122,7 @@ module miriscv_lsu
 
 	// store
   always_comb begin
-    unique case( lsu_size_i )
+    case( lsu_size_i )
       `LDST_B: data_wdata_o = { 4{lsu_data_i[7:0]} };
         
       `LDST_H: data_wdata_o = { 2{lsu_data_i[15:0]} };

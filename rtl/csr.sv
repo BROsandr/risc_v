@@ -41,7 +41,7 @@ module csr(
   assign mcause_en   = en[4];
 
   always_comb
-    unique case( A_i ) inside 
+    case( A_i ) inside 
       'h304  : RD_o = mie_o;
       'h305  : RD_o = mtvec_o;
       'h340  : RD_o = mscratch; 
@@ -56,7 +56,7 @@ module csr(
       en[i] = ( A_i == A_table[i] ) ? ( OP_i[1] | OP_i[0] ) : ( 0 );
 
   always_comb
-    unique case( OP_i[1:0] ) inside
+    case( OP_i[1:0] ) inside
       0      : csr_write_expr = 0;
       1      : csr_write_expr = WD_i;
       2      : csr_write_expr = RD_o & ~WD_i;
