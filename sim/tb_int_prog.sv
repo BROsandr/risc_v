@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module tb_miriscv_top();
+module tb_int_prog();
   localparam  CLK_PERIOD = 20;
   localparam  RAM_SIZE   = 512;       // in 32-bit words
 
