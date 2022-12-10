@@ -11,7 +11,7 @@ module address_decoder #(
   output logic                 we_leds_o,
   output logic                 we_m_o,
   output logic                 req_m_o,
-  output logic [RDSEL_WIDTH:0] RDsel_o
+  output logic [RDSEL_WIDTH-1:0] RDsel_o
 );
 
   logic  data_mem_valid;
@@ -24,6 +24,8 @@ module address_decoder #(
   assign req_m_o          = ( data_mem_valid ) ? ( req_i ) : ( 1'b0 );
 
   assign we_leds_o        = req_i && we_i && ( is_leds_addr );
+
+  assign we_m_o           = we_i;
 
   always_comb
     if( is_leds_addr )
