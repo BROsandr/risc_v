@@ -41,9 +41,8 @@ module decoder_riscv (
   logic      mem_req;
   assign     mem_req_o  = mem_req & !INT_i; 
 
-  assign     CSRop_o[2] = INT_i;
-
   always_comb begin
+    CSRop_o[2] = INT_i;
     case( opcode )
       { `LOAD_OPCODE, 2'b11 }: begin
         ex_op_a_sel_o     = `OP_A_RS1;   
@@ -333,6 +332,9 @@ module decoder_riscv (
         branch_o          = 0;
         jal_o             = 0;
         jalr_o            = 0;
+        csr_o             = 0;
+        CSRop_o           = 0;
+        INT_RST_o         = 0;
       end
     endcase
     
