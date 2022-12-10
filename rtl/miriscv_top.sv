@@ -11,8 +11,8 @@ module miriscv_top
   input         rst_n_i,
 
   input  [31:0] int_req_i,
-  output [31:0] int_fin_o
-  output [31:0] leds_out_o;
+  output [31:0] int_fin_o,
+  output [31:0] leds_out_o
 );
 
   localparam     RDSEL_WIDTH = 2;
@@ -39,8 +39,6 @@ module miriscv_top
   logic          interrupt;
   logic  [31:0]  mcause;
 
-  logic                      we;
-  logic                      we_m;
   logic                      req;
   logic                      we_leds;
   logic  [RDSEL_WIDTH-1:0]   RDsel;
@@ -48,9 +46,9 @@ module miriscv_top
 
   logic                      valid_addr;
 
-  assign valid_addr       = ( data_addr_core < RAM_SIZE ) && 
-                            ( data_addr_core < 32'h80006000 ) && 
-                            ( data_addr_core >= 32'h80000000 );
+  assign valid_addr       = ( data_addr_core < RAM_SIZE ) || 
+                            ( ( data_addr_core < 32'h80006000 ) && 
+                              ( data_addr_core >= 32'h80000000 ) );
   assign data_rdata_core  = ( valid_addr ) ? ( rdata ) : ( 1'b0 );
   assign req              = ( valid_addr ) ? ( data_req_core ) : ( 1'b0 );
   assign data_be_ram      =  data_be_core;
@@ -66,7 +64,7 @@ module miriscv_top
 
     .data_rdata_i  ( data_rdata_core  ),
     .data_req_o    ( data_req_core    ),
-    .data_we_o     ( we_m     ),
+    .data_we_o     ( data_we_core     ),
     .data_be_o     ( data_be_core     ),
     .data_addr_o   ( data_addr_core   ),
     .data_wdata_o  ( data_wdata_core  ),
@@ -112,7 +110,7 @@ module miriscv_top
     .RDSEL_WIDTH( RDSEL_WIDTH ),
     .RAM_SIZE   ( RAM_SIZE    )
   ) address_decoder(
-    .we_i( we ),
+    .we_i( data_we_core ),
     .req_i( req ),
     .addr_i( data_addr_core ),
     .we_leds_o( we_leds ),
@@ -121,11 +119,25 @@ module miriscv_top
     .RDsel_o( RDsel )
   );
 
+
+  leds_ctrl leds_ctrl(
+    .clk_i( clk_i ),
+    .rst_i( rst_n_i ),
+
+    .wdata_i( data_wdata_core ),
+    .addr_i( data_addr_core ),
+    .be_i( data_be_core ),
+    .we_i( we_leds ),
+
+    .out_o( leds_out_o )
+  );
+
   always_comb
     case( RDsel )
       `RDSEL_MEM   : rdata = data_rdata_ram;
       `RDSEL_LEDS  : rdata = leds_out_o;
 
-      default:       rdata = RDSEL_WIDTH'bxx;
+      default:       rdata = 32'bx;
+    endcase
 
 endmodule
