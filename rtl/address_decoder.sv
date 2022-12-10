@@ -17,7 +17,7 @@ module address_decoder #(
   logic  data_mem_valid;
   logic  is_leds_addr;
 
-  assign is_leds_addr = { addr_i[31:5], 5'b0 } == 32'h80000000;
+  assign is_leds_addr = { addr_i[31:2], 2'b0 } == 32'h80000800;
 
   assign data_mem_valid   = ( addr_i >= RAM_SIZE ) ?  ( 1'b0 ) : ( 1'b1 );
 
