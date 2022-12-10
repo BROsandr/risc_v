@@ -38,12 +38,14 @@ module miriscv_top
   logic          we_m;
   logic          req;
   logic          we_leds;
-  logic          RDsel;
+  logic  [1:0]   RDsel;
+  logic  [31:0]  rdata;
+  logic  [31:0]  leds_out;
 
   logic  data_mem_valid;
   assign data_mem_valid   = (data_addr_core >= RAM_SIZE) ?  1'b0 : 1'b1;
 
-  assign data_rdata_core  = (data_mem_valid) ? RDsel : 1'b0;
+  assign data_rdata_core  = (data_mem_valid) ? rdata : 1'b0;
   assign data_req_ram     = (data_mem_valid) ? req_m : 1'b0;
   assign data_be_ram      =  data_be_core;
   assign data_addr_ram    =  data_addr_core;
@@ -110,6 +112,11 @@ module miriscv_top
     .RDsel_o( RDsel )
   );
 
+  always_comb
+    case( RDsel )
+      2'b00  : rdata = data_rdata_ram;
+      2'b01  : rdata = leds_out;
 
+      default: rdata = 2'bxx;
 
 endmodule
