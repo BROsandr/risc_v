@@ -1,4 +1,4 @@
-`include "RDsel_defines.sv"
+`include "../common/defines_riscv.v"
 
 module address_decoder #(
   parameter RDSEL_WIDTH = 2,
@@ -27,8 +27,8 @@ module address_decoder #(
 
   always_comb
     if( is_leds_addr )
-      RDsel_o = `LEDS;
+      RDsel_o = `RDSEL_LEDS;
     else
-      RDsel_o = `MEM;
+      RDsel_o = `RDSEL_MEM;
 
 endmodule
