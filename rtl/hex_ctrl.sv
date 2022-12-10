@@ -8,6 +8,7 @@ module hex_ctrl hex_ctrl(
   input  logic        we_i,
 
   output logic [6:0]  seg_o,
-  output logic [6:0]  an_o
+  output logic [6:0]  an_o,
+  output logic [31:0] out_o
 );
 endmodule

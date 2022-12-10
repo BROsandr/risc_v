@@ -45,6 +45,8 @@ module miriscv_top
   logic          interrupt;
   logic  [31:0]  mcause;
 
+  logic  [31:0]  hex_out;
+
   logic                      req;
   logic                      we_leds;
   logic  [RDSEL_WIDTH-1:0]   RDsel;
@@ -152,14 +154,15 @@ module miriscv_top
     .we_i( we_hex ),
 
     .seg_o( seg_o ),
-    .an_o ( an_o  )
+    .an_o ( an_o  ),
+    .out_o( hex_out )
   );
 
   always_comb
     case( RDsel )
       `RDSEL_MEM   : rdata = data_rdata_ram;
       `RDSEL_LEDS  : rdata = leds_out_o;
-      `RDSEL_HEX   : rdata = seg_o;
+      `RDSEL_HEX   : rdata = hex_out;
 
       default:       rdata = 32'bx;
     endcase
