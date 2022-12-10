@@ -1,3 +1,5 @@
+`include "../common/defines_riscv.v"
+
 module miriscv_top
 #(
   parameter RAM_SIZE      = 256, // bytes
@@ -11,6 +13,8 @@ module miriscv_top
   input  [31:0] int_req_i,
   output [31:0] int_fin_o
 );
+
+  localparam     RDSEL_WIDTH = 2;
 
   logic  [31:0]  instr_rdata_core;
   logic  [31:0]  instr_addr_core;
@@ -34,19 +38,21 @@ module miriscv_top
   logic          interrupt;
   logic  [31:0]  mcause;
 
-  logic          we;
-  logic          we_m;
-  logic          req;
-  logic          we_leds;
-  logic  [1:0]   RDsel;
-  logic  [31:0]  rdata;
-  logic  [31:0]  leds_out;
+  logic                      we;
+  logic                      we_m;
+  logic                      req;
+  logic                      we_leds;
+  logic  [RDSEL_WIDTH-1:0]   RDsel;
+  logic  [31:0]              rdata;
+  logic  [31:0]              leds_out;
 
-  logic  data_mem_valid;
-  assign data_mem_valid   = (data_addr_core >= RAM_SIZE) ?  1'b0 : 1'b1;
+  logic                      valid_addr;
 
-  assign data_rdata_core  = (data_mem_valid) ? rdata : 1'b0;
-  assign data_req_ram     = (data_mem_valid) ? req_m : 1'b0;
+  assign valid_addr       = ( data_addr_core < RAM_SIZE ) && 
+                            ( data_addr_core < 32'h80006000 ) && 
+                            ( data_addr_core >= 32'h80000000 );
+  assign data_rdata_core  = ( valid_addr ) ? ( rdata ) : ( 1'b0 );
+  assign req              = ( valid_addr ) ? ( data_req_core ) : ( 1'b0 );
   assign data_be_ram      =  data_be_core;
   assign data_addr_ram    =  data_addr_core;
   assign data_wdata_ram   =  data_wdata_core;
@@ -102,7 +108,10 @@ module miriscv_top
     .mcause_o( mcause )
   );
 
-  address_decoder address_decoder(
+  address_decoder #(
+    .RDSEL_WIDTH( RDSEL_WIDTH ),
+    .RAM_SIZE   ( RAM_SIZE    )
+  ) address_decoder(
     .we_i( we ),
     .req_i( req ),
     .addr_i( data_addr_core ),
@@ -114,9 +123,9 @@ module miriscv_top
 
   always_comb
     case( RDsel )
-      2'b00  : rdata = data_rdata_ram;
-      2'b01  : rdata = leds_out;
+      `RDSEL_MEM   : rdata = data_rdata_ram;
+      `RDSEL_LEDS  : rdata = leds_out;
 
-      default: rdata = 2'bxx;
+      default:       rdata = RDSEL_WIDTH'bxx;
 
 endmodule
