@@ -10,7 +10,9 @@ module miriscv_top
   input         clk_i,
   input         rst_n_i,
 
-  output [15:0] leds_out_o
+  output [15:0] leds_out_o,
+  output [6:0 ] seg_o,
+  output [6:0 ] an_o
 );
 
   localparam     RDSEL_WIDTH = 2;
@@ -140,10 +142,24 @@ module miriscv_top
     .out_o( leds_out )
   );
 
+  hex_ctrl hex_ctrl(
+    .clk_i( clk_i ),
+    .rst_i( rst ),
+
+    .wdata_i( data_wdata_core ),
+    .addr_i( data_addr_core ),
+    .be_i( data_be_core ),
+    .we_i( we_hex ),
+
+    .seg_o( seg_o ),
+    .an_o ( an_o  )
+  );
+
   always_comb
     case( RDsel )
       `RDSEL_MEM   : rdata = data_rdata_ram;
       `RDSEL_LEDS  : rdata = leds_out_o;
+      `RDSEL_HEX   : rdata = seg_o;
 
       default:       rdata = 32'bx;
     endcase
