@@ -12,6 +12,7 @@ module miriscv_top
 
   input  [31:0] int_req_i,
   output [31:0] int_fin_o
+  output [31:0] leds_out;
 );
 
   localparam     RDSEL_WIDTH = 2;
@@ -44,7 +45,6 @@ module miriscv_top
   logic                      we_leds;
   logic  [RDSEL_WIDTH-1:0]   RDsel;
   logic  [31:0]              rdata;
-  logic  [31:0]              leds_out;
 
   logic                      valid_addr;
 
