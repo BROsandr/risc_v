@@ -10,12 +10,16 @@ module miriscv_top
   input         clk_i,
   input         rst_n_i,
 
-  input  [31:0] int_req_i,
-  output [31:0] int_fin_o,
-  output [31:0] leds_out_o
+  output [15:0] leds_out_o
 );
 
   localparam     RDSEL_WIDTH = 2;
+
+  logic          rst;
+  assign         rst = !rst_n_i;
+
+  logic  [31:0] int_req_i;
+  logic  [31:0] int_fin_o;
 
   logic  [31:0]  instr_rdata_core;
   logic  [31:0]  instr_addr_core;
@@ -46,6 +50,10 @@ module miriscv_top
 
   logic                      valid_addr;
 
+  logic  [31:0]              leds_out;
+
+  assign                     leds_out_o = leds_out[15:0];
+
   assign valid_addr       = ( data_addr_core < RAM_SIZE ) || 
                             ( ( data_addr_core < 32'h80006000 ) && 
                               ( data_addr_core >= 32'h80000000 ) );
@@ -57,7 +65,7 @@ module miriscv_top
 
   miriscv_core core (
     .clk_i   ( clk_i   ),
-    .rst_n_i ( rst_n_i ),
+    .rst_n_i ( rst ),
 
     .instr_rdata_i ( instr_rdata_core ),
     .instr_addr_o  ( instr_addr_core  ),
@@ -81,7 +89,7 @@ module miriscv_top
     .RAM_INIT_FILE (RAM_INIT_FILE)
   ) ram (
     .clk_i   ( clk_i   ),
-    .rst_n_i ( rst_n_i ),
+    .rst_n_i ( rst ),
 
     .instr_rdata_o ( instr_rdata_core ),
     .instr_addr_i  ( instr_addr_core  ),
@@ -96,7 +104,7 @@ module miriscv_top
 
   interrupt_controller interrupt_controller(
     .clk_i( clk_i ),
-    .rst_i( rst_n_i ),
+    .rst_i( rst ),
     .int_req_i( int_req_i ),
     .mie_i( mie ),
     .INT_RST_i( INT_RST ),
@@ -122,14 +130,14 @@ module miriscv_top
 
   leds_ctrl leds_ctrl(
     .clk_i( clk_i ),
-    .rst_i( rst_n_i ),
+    .rst_i( rst ),
 
     .wdata_i( data_wdata_core ),
     .addr_i( data_addr_core ),
     .be_i( data_be_core ),
     .we_i( we_leds ),
 
-    .out_o( leds_out_o )
+    .out_o( leds_out )
   );
 
   always_comb
