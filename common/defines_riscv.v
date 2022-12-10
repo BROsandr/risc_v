@@ -67,3 +67,7 @@
 `define JALR_IMM         2'd1
 `define JALR_MEPC        2'd2
 `define JALR_MTVEC       2'd3
+
+// RDsel
+`define RDSEL_MEM  32'd0
+`define RDSEL_LEDS 32'd1
