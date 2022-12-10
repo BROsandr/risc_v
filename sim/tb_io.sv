@@ -14,7 +14,7 @@ module tb_io;
   
   miriscv_top #(
     .RAM_SIZE       ( RAM_SIZE           ),
-    .RAM_INIT_FILE  ( "../ram/prog.txt"         )
+    .RAM_INIT_FILE  ( "prog.txt"         )
   ) dut (
     .clk_i          ( clk                ),
     .rst_n_i        ( rst_n              )
@@ -25,19 +25,19 @@ module tb_io;
     #( CLK_PERIOD / 2 ) clk <= !clk;
   
   task reset;
-    rst_n <= 0;
-    @( posedge clk );  
     rst_n <= 1;
     @( posedge clk );  
     rst_n <= 0;
+    @( posedge clk );  
+    rst_n <= 1;
   endtask
     
-  task input_number( input [11:0] number, input [4:0] rd = 1 );
-    logic [31:0] instruction;
-    instruction    <= { number, 5'b00000, 3'b000, rd, 7'b0010011 };
-    @( posedge clk );
-    dut.ram.mem[0] <= { instruction[31:24], instruction[23:16], instruction[15:8], instruction[7:0] };
-  endtask  
+//  task input_number( input [11:0] number, input [4:0] rd = 1 );
+//    logic [31:0] instruction;
+//    instruction    <= { number, 5'b00000, 3'b000, rd, 7'b0010011 };
+//    @( posedge clk );
+//    dut.ram.mem[0] <= { instruction[31:24], instruction[23:16], instruction[15:8], instruction[7:0] };
+//  endtask  
     
   initial
     begin
