@@ -71,3 +71,4 @@
 // RDsel
 `define RDSEL_MEM  32'd0
 `define RDSEL_LEDS 32'd1
+`define RDSEL_LEDS 32'd2
