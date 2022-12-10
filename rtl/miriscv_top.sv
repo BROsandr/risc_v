@@ -12,7 +12,7 @@ module miriscv_top
 
   input  [31:0] int_req_i,
   output [31:0] int_fin_o
-  output [31:0] leds_out;
+  output [31:0] leds_out_o;
 );
 
   localparam     RDSEL_WIDTH = 2;
@@ -124,7 +124,7 @@ module miriscv_top
   always_comb
     case( RDsel )
       `RDSEL_MEM   : rdata = data_rdata_ram;
-      `RDSEL_LEDS  : rdata = leds_out;
+      `RDSEL_LEDS  : rdata = leds_out_o;
 
       default:       rdata = RDSEL_WIDTH'bxx;
 
