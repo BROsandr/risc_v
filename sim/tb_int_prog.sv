@@ -22,10 +22,10 @@ module tb_int_prog();
     .RAM_INIT_FILE  ( "prog.txt"         )
   ) dut (
     .clk_i          ( clk                ),
-    .rst_n_i        ( rst_n              ),
-    .int_req_i      ( int_req            ),
-    .int_fin_o      ( int_fin            ),
-    .r1_o( r1 )
+    .rst_n_i        ( rst_n              )
+//    .int_req_i      ( int_req            ),
+//    .int_fin_o      ( int_fin            )
+//    .r1_o( r1 )
   );
 
   

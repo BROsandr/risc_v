@@ -9,12 +9,15 @@ module miriscv_top
   // clock, reset
   input                clk_i,
   input                rst_n_i,
-  input  logic  [31:0] int_req_i,
-  output logic  [31:0] int_fin_o,
+//  input  logic  [31:0] int_req_i,
+//  output logic  [31:0] int_fin_o,
 
-  output [15:0] leds_out_o,
-  output [31:0] r1_o
+  output [15:0] leds_out_o
+  // output  r1_o
 );
+
+  logic [31:0] r1;
+  assign r1_o = r1[0];
 
   localparam     RDSEL_WIDTH = 2;
 
@@ -81,7 +84,7 @@ module miriscv_top
 
     .INT_RST_o( INT_RST ),
     .mie_o( mie ), 
-    .r1_o ( r1_o )
+    .r1_o ( r1 )
   );
 
   miriscv_ram
