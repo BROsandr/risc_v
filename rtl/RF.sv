@@ -11,10 +11,14 @@ module RF(
   output [31:0] RD1_o,
   output [31:0] RD2_o,
   
+  output [31:0] r1_o,
+  
   input         WE3_i
 );
 
   reg [31:0] registers [0:31];
+  
+  assign r1_o = registers[1];
   
   assign RD1_o = ( A1_i ) ? ( registers[A1_i] ) : ( 0 );
   assign RD2_o = ( A2_i ) ? ( registers[A2_i] ) : ( 0 );

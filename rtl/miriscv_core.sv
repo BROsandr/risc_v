@@ -18,7 +18,8 @@ module miriscv_core(
   input  [31:0] mcause_i,
 
   output        INT_RST_o,
-  output [31:0] mie_o
+  output [31:0] mie_o,
+  output [31:0] r1_o
 );
   logic [31:0] RD1;
   
@@ -158,6 +159,7 @@ module miriscv_core(
     .WD3_i( WD3      ),
     .RD1_o( RD1      ),
     .RD2_o( RD2      ),
+    .r1_o (r1_o ),
     .WE3_i( gpr_we_a )
   );
 
