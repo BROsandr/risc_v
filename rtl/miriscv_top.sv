@@ -2,15 +2,15 @@
 
 module miriscv_top
 #(
-  parameter RAM_SIZE      = 256, // bytes
+  parameter RAM_SIZE      = 2048, // bytes
   parameter RAM_INIT_FILE = "prog.txt"
 )
 (
   // clock, reset
   input                clk_i,
   input                rst_n_i,
-  // input  logic  [31:0] int_req_i;
-  // output logic  [31:0] int_fin_o;
+  input  logic  [31:0] int_req_i,
+  output logic  [31:0] int_fin_o,
 
 
   output [15:0]        leds_out_o,
