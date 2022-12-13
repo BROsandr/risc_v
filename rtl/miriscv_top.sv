@@ -15,7 +15,7 @@ module miriscv_top
 
   output [15:0]        leds_out_o,
   output [6:0 ]        seg_o,
-  output [6:0 ]        an_o
+  output [3:0 ]        an_o
 );
 
   localparam     RDSEL_WIDTH = 2;
@@ -51,6 +51,8 @@ module miriscv_top
   logic                      we_leds;
   logic  [RDSEL_WIDTH-1:0]   RDsel;
   logic  [31:0]              rdata;
+
+  logic                      we_hex;
 
   logic                      valid_addr;
 
@@ -126,6 +128,7 @@ module miriscv_top
     .req_i( req ),
     .addr_i( data_addr_core ),
     .we_leds_o( we_leds ),
+    .we_hex_o ( we_hex ),
     .we_m_o( data_we_ram ),
     .req_m_o( data_req_ram ),
     .RDsel_o( RDsel )
