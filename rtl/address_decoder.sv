@@ -9,6 +9,7 @@ module address_decoder #(
   input  logic [31:0]          addr_i,
 
   output logic                 we_leds_o,
+  output logic                 we_hex_o,
   output logic                 we_m_o,
   output logic                 req_m_o,
   output logic [RDSEL_WIDTH-1:0] RDsel_o
@@ -16,20 +17,25 @@ module address_decoder #(
 
   logic  data_mem_valid;
   logic  is_leds_addr;
+  logic  is_hex_addr;
 
   assign is_leds_addr = { addr_i[31:2], 2'b0 } == 32'h80000800;
+  assign is_hex_addr  = { addr_i[31:2], 2'b0 } == 32'h80001000;
 
   assign data_mem_valid   = ( addr_i >= RAM_SIZE ) ?  ( 1'b0 ) : ( 1'b1 );
 
   assign req_m_o          = ( data_mem_valid ) ? ( req_i ) : ( 1'b0 );
 
   assign we_leds_o        = req_i && we_i && ( is_leds_addr );
+  assign we_hex_o         = req_i && we_i && ( is_hex_addr );
 
   assign we_m_o           = we_i;
 
   always_comb
     if( is_leds_addr )
       RDsel_o = `RDSEL_LEDS;
+    else if( is_hex_addr )
+      RDsel_o = `RDSEL_HEX;
     else
       RDsel_o = `RDSEL_MEM;
 
