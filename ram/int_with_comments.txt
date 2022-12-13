@@ -1,0 +1,92 @@
+Address     Code        Basic                        Line Source
+
+0x00400000  0x00100093  addi x1,x0,1                 1    li x1, 1
+0x00400004  0x00200113  addi x2,x0,2                 2    li x2, 2
+0x00400008  0x00300193  addi x3,x0,3                 3    li x3, 3
+0x0040000c  0x00400213  addi x4,x0,4                 4    li x4, 4
+0x00400010  0x00500293  addi x5,x0,5                 5    li x5, 5
+0x00400014  0x30409373  csrrw x6,0x00000304,x1       7    csrrw x6, 0x304, x1
+0x00400018  0x30511373  csrrw x6,0x00000305,x2       8    csrrw x6, 0x305, x2
+0x0040001c  0x34019373  csrrw x6,0x00000340,x3       9    csrrw x6, 0x340, x3
+0x00400020  0x34121373  csrrw x6,0x00000341,x4       10   csrrw x6, 0x341, x4
+0x00400024  0x34229373  csrrw x6,0x00000342,x5       11   csrrw x6, 0x342, x5
+0x00400028  0x304093f3  csrrw x7,0x00000304,x1       13   csrrw x7, 0x304, x1
+0x0040002c  0x30509473  csrrw x8,0x00000305,x1       14   csrrw x8, 0x305, x1
+0x00400030  0x340094f3  csrrw x9,0x00000340,x1       15   csrrw x9, 0x340, x1
+0x00400034  0x34109573  csrrw x10,0x00000341,x1      16   csrrw x10, 0x341, x1
+0x00400038  0x342095f3  csrrw x11,0x00000342,x1      17   csrrw x11, 0x342, x1
+0x0040003c  0x00100333  add x6,x0,x1                 19   mv x6, x1
+0x00400040  0x104000ef  jal x1,0x00000104            20   jal reset
+0x00400044  0x006000b3  add x1,x0,x6                 21   mv x1, x6
+0x00400048  0x3041a373  csrrs x6,0x00000304,x3       23   csrrs x6, 0x304, x3
+0x0040004c  0x3051a373  csrrs x6,0x00000305,x3       24   csrrs x6, 0x305, x3
+0x00400050  0x3401a373  csrrs x6,0x00000340,x3       25   csrrs x6, 0x340, x3
+0x00400054  0x3411a373  csrrs x6,0x00000341,x3       26   csrrs x6, 0x341, x3
+0x00400058  0x3421a373  csrrs x6,0x00000342,x3       27   csrrs x6, 0x342, x3
+0x0040005c  0x3041a3f3  csrrs x7,0x00000304,x3       29   csrrs x7, 0x304, x3
+0x00400060  0x3051a473  csrrs x8,0x00000305,x3       30   csrrs x8, 0x305, x3
+0x00400064  0x3401a4f3  csrrs x9,0x00000340,x3       31   csrrs x9, 0x340, x3
+0x00400068  0x3411a573  csrrs x10,0x00000341,x3      32   csrrs x10, 0x341, x3
+0x0040006c  0x3421a5f3  csrrs x11,0x00000342,x3      33   csrrs x11, 0x342, x3
+0x00400070  0x00100333  add x6,x0,x1                 35   mv x6, x1
+0x00400074  0x0d0000ef  jal x1,0x000000d0            36   jal reset
+0x00400078  0x006000b3  add x1,x0,x6                 37   mv x1, x6
+0x0040007c  0x30419073  csrrw x0,0x00000304,x3       39   csrw x3 0x304 
+0x00400080  0x30519073  csrrw x0,0x00000305,x3       40   csrw x3, 0x305
+0x00400084  0x34019073  csrrw x0,0x00000340,x3       41   csrw x3, 0x340
+0x00400088  0x34119073  csrrw x0,0x00000341,x3       42   csrw x3, 0x341
+0x0040008c  0x34219073  csrrw x0,0x00000342,x3       43   csrw x3, 0x342
+0x00400090  0x304233f3  csrrc x7,0x00000304,x4       45   csrrc x7, 0x304, x4
+0x00400094  0x30523473  csrrc x8,0x00000305,x4       46   csrrc x8, 0x305, x4
+0x00400098  0x340234f3  csrrc x9,0x00000340,x4       47   csrrc x9, 0x340, x4
+0x0040009c  0x34123573  csrrc x10,0x00000341,x4      48   csrrc x10, 0x341, x4
+0x004000a0  0x342235f3  csrrc x11,0x00000342,x4      49   csrrc x11, 0x342, x4
+0x004000a4  0x304023f3  csrrs x7,0x00000304,x0       51   csrr  x7, 0x304
+0x004000a8  0x30502473  csrrs x8,0x00000305,x0       52   csrr x8, 0x305
+0x004000ac  0x340024f3  csrrs x9,0x00000340,x0       53   csrr x9, 0x340
+0x004000b0  0x34102573  csrrs x10,0x00000341,x0      54   csrr x10, 0x341
+0x004000b4  0x342025f3  csrrs x11,0x00000342,x0      55   csrr x11, 0x342
+0x004000b8  0x3040b3f3  csrrc x7,0x00000304,x1       57   csrrc x7, 0x304, x1
+0x004000bc  0x3050b473  csrrc x8,0x00000305,x1       58   csrrc x8, 0x305, x1
+0x004000c0  0x3400b4f3  csrrc x9,0x00000340,x1       59   csrrc x9, 0x340, x1
+0x004000c4  0x3410b573  csrrc x10,0x00000341,x1      60   csrrc x10, 0x341, x1
+0x004000c8  0x3420b5f3  csrrc x11,0x00000342,x1      61   csrrc x11, 0x342, x1
+0x004000cc  0x304023f3  csrrs x7,0x00000304,x0       63   csrr  x7, 0x304
+0x004000d0  0x30502473  csrrs x8,0x00000305,x0       64   csrr x8, 0x305
+0x004000d4  0x340024f3  csrrs x9,0x00000340,x0       65   csrr x9, 0x340
+0x004000d8  0x34102573  csrrs x10,0x00000341,x0      66   csrr x10, 0x341
+0x004000dc  0x342025f3  csrrs x11,0x00000342,x0      67   csrr x11, 0x342
+0x004000e0  0x00000613  addi x12,x0,0                69   li x12, 0
+0x004000e4  0xffe00693  addi x13,x0,0xfffffffe       70   li x13, -2
+0x004000e8  0x30469073  csrrw x0,0x00000304,x13      71   csrw x13, 0x304 
+0x004000ec  0x00000697  auipc x13,0                  72   la x13, interrupt
+0x004000f0  0x07068693  addi x13,x13,0x00000070           
+0x004000f4  0x30569073  csrrw x0,0x00000305,x13      73   csrw x13, 0x305
+0x004000f8  0x00160863  beq x12,x1,0x00000010        76           beq x12, x1, ordinary_instr_end
+0x004000fc  0x00100693  addi x13,x0,1                77   	li x13, 1
+0x00400100  0x00000693  addi x13,x0,0                78   	li x13, 0
+0x00400104  0xff5ff06f  jal x0,0xfffffff4            79   	j ordinary_instr
+0x00400108  0x00000613  addi x12,x0,0                82   li x12, 0	
+0x0040010c  0x00160a63  beq x12,x1,0x00000014        85   	beq x12, x1, store_end
+0x00400110  0x06400693  addi x13,x0,0x00000064       86   	li x13, 100
+0x00400114  0x0016a023  sw x1,0(x13)                 87   	sw x1, 0(x13)
+0x00400118  0x0006a023  sw x0,0(x13)                 88   	sw x0, 0(x13)
+0x0040011c  0xff1ff06f  jal x0,0xfffffff0            89   	j store
+0x00400120  0x00000613  addi x12,x0,0                92   li x12, 0
+0x00400124  0x0006a223  sw x0,4(x13)                 93   sw x0, 4(x13)
+0x00400128  0x0016a023  sw x1,0(x13)                 94   sw x1, 0(x13)
+0x0040012c  0x06400693  addi x13,x0,0x00000064       95   li x13, 100
+0x00400130  0x00160863  beq x12,x1,0x00000010        98   	beq x12, x1, load_end
+0x00400134  0x0006a703  lw x14,0(x13)                99   	lw x14, 0(x13)
+0x00400138  0x0046a703  lw x14,4(x13)                100  	lw x14, 4(x13)
+0x0040013c  0xff5ff06f  jal x0,0xfffffff4            101  	j load
+0x00400140  0x0000006f  jal x0,0x00000000            104  j load_end
+0x00400144  0x00000393  addi x7,x0,0                 107  li x7, 0
+0x00400148  0x00000413  addi x8,x0,0                 108  li x8, 0
+0x0040014c  0x00000493  addi x9,x0,0                 109  li x9, 0
+0x00400150  0x00000513  addi x10,x0,0                110  li x10, 0
+0x00400154  0x00000593  addi x11,x0,0                111  li x11, 0
+0x00400158  0x00008067  jalr x0,x1,0                 112  ret
+0x0040015c  0x34202e73  csrrs x28,0x00000342,x0      115  	csrr x28, 0x342
+0x00400160  0x00100613  addi x12,x0,1                116  	li x12, 1
+0x00400164  0x00200073  uret                         117  	uret

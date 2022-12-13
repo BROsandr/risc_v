@@ -30,19 +30,12 @@ module tb_int_prog();
     #( CLK_PERIOD / 2 ) clk <= !clk;
   
   task reset;
-    rst_n <= 0;
-    @( posedge clk );  
     rst_n <= 1;
     @( posedge clk );  
     rst_n <= 0;
+    @( posedge clk );  
+    rst_n <= 1;
   endtask
-    
-  task input_number( input [11:0] number, input [4:0] rd = 1 );
-    logic [31:0] instruction;
-    instruction    <= { number, 5'b00000, 3'b000, rd, 7'b0010011 };
-    @( posedge clk );
-    dut.ram.mem[0] <= { instruction[31:24], instruction[23:16], instruction[15:8], instruction[7:0] };
-  endtask  
 
   task interrupt( input int num );  
     // simulation int trigger at random time
@@ -57,10 +50,12 @@ module tb_int_prog();
     end
 
   initial begin
+    logic [30:0] int_num;
     @( negedge rst_n );
     forever begin
       @( dut.core.rf.registers[28] );
-      $display( "%d interrupt detected", dut.core.rf.registers[28] );
+      int_num = dut.core.rf.registers[28];
+      $display( "%d interrupt detected", int_num );
     end
   end
     
@@ -73,13 +68,15 @@ module tb_int_prog();
       reset; 
       @( posedge clk ); 
       
-      #500;
+      #5000;
       interrupt( 5 );
-      #100;
-      interrupt( 3 );
-      #500;
-      interrupt( 2 );
+      #1000;
+      interrupt( 0 );
+      #1500;
+      interrupt( 4 );
       #2000;
+      interrupt( 15 );
+      #1000;
       $finish;
     end
 
