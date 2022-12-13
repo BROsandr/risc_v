@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module tb_int_prog();
+module tb_lab7();
   localparam  CLK_PERIOD = 20;
   localparam  RAM_SIZE   = 512;       // in 32-bit words
 
@@ -14,13 +14,20 @@ module tb_int_prog();
 
   logic [31:0] int_req;
   logic [31:0] int_fin;
+
+  logic [6:0] seg;
+  logic [3:0] an;
+  logic [15:0] leds_out;
   
   miriscv_top #(
     .RAM_SIZE       ( RAM_SIZE           ),
-    .RAM_INIT_FILE  ( "../ram/prog_int.txt"         )
+    .RAM_INIT_FILE  ( "prog.txt"         )
   ) dut (
     .clk_i          ( clk                ),
-    .rst_n_i        ( rst_n              )
+    .rst_n_i        ( rst_n              ),
+    .leds_out_o( leds_out ),
+    .seg_o( seg ),
+    .an_o( an )
     // .int_req_i      ( int_req            ),
     // .int_fin_o      ( int_fin            )
   );
@@ -45,8 +52,8 @@ module tb_int_prog();
       reset; 
       @( posedge clk ); 
       
-      #2000;
-      $finish;
+      #2000000;
+      // $finish;
     end
 
 endmodule
