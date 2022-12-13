@@ -2,7 +2,7 @@
 
 module tb_lab7();
   localparam  CLK_PERIOD = 20;
-  localparam  RAM_SIZE   = 512;       // in 32-bit words
+  localparam  RAM_SIZE   = 2048;       // in 32-bit words
 
   reg         clk        = 0;
   reg         rst_n      = 0;
@@ -27,9 +27,9 @@ module tb_lab7();
     .rst_n_i        ( rst_n              ),
     .leds_out_o( leds_out ),
     .seg_o( seg ),
-    .an_o( an )
-    // .int_req_i      ( int_req            ),
-    // .int_fin_o      ( int_fin            )
+    .an_o( an ),
+    .int_req_i      ( int_req            ),
+    .int_fin_o      ( int_fin            )
   );
 
   
@@ -52,8 +52,8 @@ module tb_lab7();
       reset; 
       @( posedge clk ); 
       
-      #2000000;
-      // $finish;
+      #20000000;
+      $finish;
     end
 
 endmodule
