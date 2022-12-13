@@ -3,25 +3,25 @@
 module miriscv_top
 #(
   parameter RAM_SIZE      = 256, // bytes
-  parameter RAM_INIT_FILE = ""
+  parameter RAM_INIT_FILE = "prog.txt"
 )
 (
   // clock, reset
-  input         clk_i,
-  input         rst_n_i,
+  input                clk_i,
+  input                rst_n_i,
+  // input  logic  [31:0] int_req_i;
+  // output logic  [31:0] int_fin_o;
 
-  output [15:0] leds_out_o,
-  output [6:0 ] seg_o,
-  output [6:0 ] an_o
+
+  output [15:0]        leds_out_o,
+  output [6:0 ]        seg_o,
+  output [6:0 ]        an_o
 );
 
   localparam     RDSEL_WIDTH = 2;
 
   logic          rst;
   assign         rst = !rst_n_i;
-
-  logic  [31:0] int_req_i;
-  logic  [31:0] int_fin_o;
 
   logic  [31:0]  instr_rdata_core;
   logic  [31:0]  instr_addr_core;
