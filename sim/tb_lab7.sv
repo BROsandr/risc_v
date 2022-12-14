@@ -27,9 +27,9 @@ module tb_lab7();
     .rst_n_i        ( rst_n              ),
     .leds_out_o( leds_out ),
     .seg_o( seg ),
-    .an_o( an ),
-    .int_req_i      ( int_req            ),
-    .int_fin_o      ( int_fin            )
+    .an_o( an )
+//    .int_req_i      ( int_req            ),
+//    .int_fin_o      ( int_fin            )
   );
 
   
