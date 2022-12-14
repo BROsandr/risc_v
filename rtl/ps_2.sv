@@ -1,4 +1,4 @@
-module ps2_keyboard (
+module ps_2 (
   input  logic       clk_50_i,
   input  logic       rst_i,
 
@@ -12,6 +12,8 @@ module ps2_keyboard (
   localparam RECEIVE_DATA           = 2'd1;
   localparam CHECK_PARITY_STOP_BITS = 2'd2;
 
+  logic [3:0] count_bit;
+
   logic [9:0] ps2_clk_detect;
 
   always_ff @( posedge clk_50_i or posedge rst_i )
@@ -19,7 +21,6 @@ module ps2_keyboard (
       ps2_clk_detect <= 10'd0;
     else
       ps2_clk_detect <= { ps2_clk_i, ps2_clk_detect[9:1] };
-  end
 
   logic ps2_clk_negedge = &ps2_clk_detect[4:0] && &( ~ps2_clk_detect[9:5] ); 
 
@@ -50,14 +51,13 @@ module ps2_keyboard (
   logic [8:0] shift_reg;
   assign      data = shift_reg[7:0];
 
-  always_ff @( posedge clk_50_i or posedge areset )
+  always_ff @( posedge clk_50_i or posedge rst_i )
   if( rst_i )
     shift_reg <= 9'b0;
   else if( ps2_clk_negedge )
     if( state == RECEIVE_DATA )
-      shift_reg <= { ps2_dat, shift_reg[8:1] };
+      shift_reg <= { ps2_dat_i, shift_reg[8:1] };
 
-  logic [3:0] count_bit;
   always_ff @( posedge clk_50_i or posedge rst_i )
     if ( rst_i )
       count_bit <= 4'b0;
@@ -76,13 +76,13 @@ module ps2_keyboard (
 
   always_ff @( posedge clk_50_i or posedge rst_i )
     if ( rst_i ) 
-      valid_data <= 1'b0;
+      valid_data_o <= 1'b0;
     else if ( ps2_clk_negedge )
-      if (ps2_dat &&
+      if (ps2_dat_i &&
           parity_calc(shift_reg[7:0]) == shift_reg[8] &&
           state == CHECK_PARITY_STOP_BITS)
-        valid_data <= 1'b1;
+        valid_data_o <= 1'b1;
       else
-        valid_data <= 1'b0;
+        valid_data_o <= 1'b0;
 
 endmodule
