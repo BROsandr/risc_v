@@ -63,15 +63,16 @@ module hex_ctrl(
         end
 
         default:
-          displayed_number_selected <= 0;
+          displayed_number_selected        <= 0;
       endcase
     else 
-      displayed_number_selected <= 0;
+      displayed_number_selected            <= 0;
     
   always_ff @( posedge clk_i or posedge rst_i )
     if( rst_i )
       one_second_counter <= 0;
-    else if( one_second_counter >= 99999999 ) 
+    // else if( one_second_counter >= 99999999 ) 
+    else if( one_second_counter >= 999999 ) 
       one_second_counter <= 0;
     else
       one_second_counter <= one_second_counter + 1;
@@ -79,12 +80,13 @@ module hex_ctrl(
   always_ff @( posedge clk_i or posedge rst_i )
     if( rst_i )
       one_second_enable <= 0;
-    else if( one_second_counter==99999999 )
+    // else if( one_second_counter == 99999999 )
+    else if( one_second_counter == 999999 )
       one_second_enable <= ~one_second_enable;
 
   always_ff @( posedge clk_i or posedge rst_i )
     if( rst_i )
-      displayed_number <= 0;
+      displayed_number          <= 0;
     else if( we_i && addr_i[3] == 0 ) begin
       if( be_i[0] )
         displayed_number[3:0]   <= wdata_i[3:0];
