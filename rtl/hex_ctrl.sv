@@ -20,8 +20,6 @@ module hex_ctrl(
 
   logic [15:0] displayed_number_selected;
 
-  assign       displayed_number_masked = displayed_number | mask;
-
   logic [7:0]  selection;
 
   logic [26:0] one_second_counter; // counter for generating 1 second clock enable
@@ -29,10 +27,10 @@ module hex_ctrl(
 
   always_ff @( posedge clk_i or posedge rst_i )
     if( rst_i ) 
-      displayed_number_selected <= 0;
+      displayed_number_selected            <= 0;
     else if( selection == 8'hFF )
-      displayed_number_selected <= displayed_number_masked;
-    else if( selection >= 0 && selection <= 3 )
+      displayed_number_selected            <= displayed_number_masked;
+    else
       case( selection )
         0: begin
           displayed_number_selected[3:0]   <= ( one_second_enable ) ? ( displayed_number_masked[3:0] ) : ( 4'b1111 );
@@ -65,14 +63,11 @@ module hex_ctrl(
         default:
           displayed_number_selected        <= 0;
       endcase
-    else 
-      displayed_number_selected            <= 0;
     
   always_ff @( posedge clk_i or posedge rst_i )
     if( rst_i )
       one_second_counter <= 0;
-    // else if( one_second_counter >= 99999999 ) 
-    else if( one_second_counter >= 999999 ) 
+    else if( one_second_counter >= 99999999 ) 
       one_second_counter <= 0;
     else
       one_second_counter <= one_second_counter + 1;
@@ -80,8 +75,7 @@ module hex_ctrl(
   always_ff @( posedge clk_i or posedge rst_i )
     if( rst_i )
       one_second_enable <= 0;
-    // else if( one_second_counter == 99999999 )
-    else if( one_second_counter == 999999 )
+    else if( one_second_counter == 99999999 )
       one_second_enable <= ~one_second_enable;
 
   always_ff @( posedge clk_i or posedge rst_i )
@@ -98,17 +92,21 @@ module hex_ctrl(
         displayed_number[15:12] <= wdata_i[15:12];
     end
 
-  always_comb begin
-    mask          = { 16 { 1'b0 } };
-    if( !an_enable[0] )
-      mask[3:0]   = { 4 { 1'b1 } };
-    if( !an_enable[1] )  
-      mask[7:4]   = { 4 { 1'b1 } };
-    if( !an_enable[2] )
-      mask[11:8]  = { 4 { 1'b1 } };
-    if( !an_enable[3] )
-      mask[15:12] = { 4 { 1'b1 } };
-  end
+  always_ff @( posedge clk_i or posedge rst_i )
+    if( rst_i )
+      mask        <= 0;
+    else begin
+      mask[3:0]   <= ( !an_enable[0] ) ? ( { 4 { 1'b1 } } ) : ( { 4 { 1'b0 } } );
+      mask[7:4]   <= ( !an_enable[1] ) ? ( { 4 { 1'b1 } } ) : ( { 4 { 1'b0 } } );
+      mask[11:8]  <= ( !an_enable[2] ) ? ( { 4 { 1'b1 } } ) : ( { 4 { 1'b0 } } );
+      mask[15:12] <= ( !an_enable[3] ) ? ( { 4 { 1'b1 } } ) : ( { 4 { 1'b0 } } );
+    end
+
+  always_ff @( posedge clk_i or posedge rst_i )
+    if( rst_i )
+      displayed_number_masked <= 0;
+    else
+      displayed_number_masked <= displayed_number | mask;
 
   always_ff @( posedge clk_i or posedge rst_i )
     if( rst_i )
