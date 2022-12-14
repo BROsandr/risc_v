@@ -18,7 +18,69 @@ module hex_ctrl(
   logic [15:0] mask;
   logic [3:0]  an_enable;
 
+  logic [15:0] displayed_number_selected;
+
   assign       displayed_number_masked = displayed_number | mask;
+
+  logic [7:0]  selection;
+
+  logic [26:0] one_second_counter; // counter for generating 1 second clock enable
+  logic        one_second_enable;// one second enable for counting numbers
+
+  always_ff @( posedge clk_i or posedge rst_i )
+    if( rst_i ) 
+      displayed_number_selected <= 0;
+    else if( selection == 8'hFF )
+      displayed_number_selected <= displayed_number_masked;
+    else if( selection >= 0 && selection <= 3 )
+      case( selection )
+        0: begin
+          displayed_number_selected[3:0]   <= ( one_second_enable ) ? ( displayed_number_masked[3:0] ) : ( 4'b1111 );
+          displayed_number_selected[7:4]   <= displayed_number_masked[7:4];
+          displayed_number_selected[11:8]  <= displayed_number_masked[11:8];
+          displayed_number_selected[15:12] <= displayed_number_masked[15:12];
+        end
+
+        1: begin
+          displayed_number_selected[3:0]   <= displayed_number_masked[3:0];
+          displayed_number_selected[7:4]   <= ( one_second_enable ) ? ( displayed_number_masked[7:4] ) : ( 4'b1111 );
+          displayed_number_selected[11:8]  <= displayed_number_masked[11:8];
+          displayed_number_selected[15:12] <= displayed_number_masked[15:12];
+        end
+
+        2: begin
+          displayed_number_selected[3:0]   <= displayed_number_masked[3:0];
+          displayed_number_selected[7:4]   <= displayed_number_masked[7:4];
+          displayed_number_selected[11:8]  <= ( one_second_enable ) ? ( displayed_number_masked[11:8] ) : ( 4'b1111 );
+          displayed_number_selected[15:12] <= displayed_number_masked[15:12];
+        end
+
+        3: begin
+          displayed_number_selected[3:0]   <= displayed_number_masked[3:0];
+          displayed_number_selected[7:4]   <= displayed_number_masked[7:4];
+          displayed_number_selected[11:8]  <= displayed_number_masked[11:8];
+          displayed_number_selected[15:12] <= ( one_second_enable ) ? ( displayed_number_masked[15:12] ) : ( 4'b1111 );
+        end
+
+        default:
+          displayed_number_selected <= 0;
+      endcase
+    else 
+      displayed_number_selected <= 0;
+    
+  always_ff @( posedge clk_i or posedge rst_i )
+    if( rst_i )
+      one_second_counter <= 0;
+    else if( one_second_counter >= 99999999 ) 
+      one_second_counter <= 0;
+    else
+      one_second_counter <= one_second_counter + 1;
+
+  always_ff @( posedge clk_i or posedge rst_i )
+    if( rst_i )
+      one_second_enable <= 0;
+    else if( one_second_counter==99999999 )
+      one_second_enable <= ~one_second_enable;
 
   always_ff @( posedge clk_i or posedge rst_i )
     if( rst_i )
@@ -49,13 +111,19 @@ module hex_ctrl(
   always_ff @( posedge clk_i or posedge rst_i )
     if( rst_i )
       an_enable <= 0;
-    else if( we_i && addr_i[3] == 1 )
+    else if( we_i && addr_i[3] == 1 && be_i[0] == 1 )
       an_enable <= wdata_i[3:0];
+
+  always_ff @( posedge clk_i or posedge rst_i )
+    if( rst_i )
+      selection <= 0;
+    else if( we_i && addr_i[3] == 1 && be_i[1] == 1 ) 
+      selection <= wdata_i[3:0];
 
   Seven_segment_LED_Display_Controller Seven_segment_LED_Display_Controller(
     .clock_100Mhz( clk_i ), // 100 Mhz clock source on Basys 3 FPGA
     .reset( rst_i ), // reset
-    .displayed_number_i( displayed_number_masked ),
+    .displayed_number_i( displayed_number_selected ),
     
     .AN( an_o ), // anode signals of the 7-segment LED display
     .SEG( seg_o )// cathode patterns of the 7-segment LED display
