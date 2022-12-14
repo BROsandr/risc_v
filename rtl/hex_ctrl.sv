@@ -96,10 +96,10 @@ module hex_ctrl(
     if( rst_i )
       mask        <= 0;
     else begin
-      mask[3:0]   <= ( !an_enable[0] ) ? ( { 4 { 1'b1 } } ) : ( { 4 { 1'b0 } } );
-      mask[7:4]   <= ( !an_enable[1] ) ? ( { 4 { 1'b1 } } ) : ( { 4 { 1'b0 } } );
-      mask[11:8]  <= ( !an_enable[2] ) ? ( { 4 { 1'b1 } } ) : ( { 4 { 1'b0 } } );
-      mask[15:12] <= ( !an_enable[3] ) ? ( { 4 { 1'b1 } } ) : ( { 4 { 1'b0 } } );
+      mask[3:0]   <= ( !an_enable[0] && selection != 0 ) ? ( { 4 { 1'b1 } } ) : ( { 4 { 1'b0 } } );
+      mask[7:4]   <= ( !an_enable[1] && selection != 1 ) ? ( { 4 { 1'b1 } } ) : ( { 4 { 1'b0 } } );
+      mask[11:8]  <= ( !an_enable[2] && selection != 2 ) ? ( { 4 { 1'b1 } } ) : ( { 4 { 1'b0 } } );
+      mask[15:12] <= ( !an_enable[3] && selection != 3 ) ? ( { 4 { 1'b1 } } ) : ( { 4 { 1'b0 } } );
     end
 
   always_ff @( posedge clk_i or posedge rst_i )
