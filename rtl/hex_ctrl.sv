@@ -18,7 +18,7 @@ module hex_ctrl(
   logic [15:0] mask;
   logic [3:0]  an_enable;
 
-  assign       displayed_number_masked = displayed_number & mask;
+  assign       displayed_number_masked = displayed_number | mask;
 
   always_ff @( posedge clk_i or posedge rst_i )
     if( rst_i )
@@ -35,15 +35,15 @@ module hex_ctrl(
     end
 
   always_comb begin
-    mask          = { 16 { 1'b1 } };
+    mask          = { 16 { 1'b0 } };
     if( !an_enable[0] )
-      mask[3:0]   = 0;
+      mask[3:0]   = { 4 { 1'b1 } };
     if( !an_enable[1] )  
-      mask[7:4]   = 0;
+      mask[7:4]   = { 4 { 1'b1 } };
     if( !an_enable[2] )
-      mask[11:8]  = 0;
+      mask[11:8]  = { 4 { 1'b1 } };
     if( !an_enable[3] )
-      mask[15:12] = 0;
+      mask[15:12] = { 4 { 1'b1 } };
   end
 
   always_ff @( posedge clk_i or posedge rst_i )

@@ -52,7 +52,7 @@ module tb_lab7();
       reset; 
       @( posedge clk ); 
       
-      #20000000;
+      #200000000;
       $finish;
     end
 

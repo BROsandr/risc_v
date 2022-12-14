@@ -9,24 +9,6 @@ module Seven_segment_LED_Display_Controller(
     output reg [6:0] SEG// cathode patterns of the 7-segment LED display
     );
     
-//    function [15:0] to_BCD( input [13:0] bin );
-   
-//      integer i;
-//      logic [15:0] bcd;
-//      bcd=0;		 	
-//      for (i=0;i<14;i=i+1) begin					//Iterate once for each bit in input number
-//        if (bcd[3:0] >= 5) bcd[3:0] = bcd[3:0] + 3;		//If any BCD digit is >= 5, add three
-//        if (bcd[7:4] >= 5) bcd[7:4] = bcd[7:4] + 3;
-//        if (bcd[11:8] >= 5) bcd[11:8] = bcd[11:8] + 3;
-//        if (bcd[15:12] >= 5) bcd[15:12] = bcd[15:12] + 3;
-//        bcd = {bcd[14:0],bin[13-i]};				//Shift one bit, and shift in proper bit from input 
-//      end
-      
-//      return bcd;
-//    endfunction
-    
-//    assign displayed_number_i = to_BCD(32);
-    
     wire rst = reset;
     
     reg [3:0]  LED_BCD;
@@ -90,6 +72,7 @@ module Seven_segment_LED_Display_Controller(
         4'b0111: SEG = 7'b0001111; // "7" 
         4'b1000: SEG = 7'b0000000; // "8"     
         4'b1001: SEG = 7'b0000100; // "9" 
+        4'b1111: SEG = 7'b1111111; // off
         default: SEG = 7'b0000001; // "0"
         endcase
     end
