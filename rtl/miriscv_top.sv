@@ -13,9 +13,13 @@ module miriscv_top
 //  output logic  [31:0] int_fin_o,
 
 
-  output [15:0]        leds_out_o,
+  output [14:0]        leds_out_o,
   output [6:0 ]        seg_o,
-  output [3:0 ]        an_o
+  output [3:0 ]        an_o,
+
+  input ps2_clk_i,
+  input ps2_dat_i,
+  output valid_data_o
 );
 
   localparam     RDSEL_WIDTH = 2;
@@ -160,6 +164,16 @@ module miriscv_top
     .an_o ( an_o  ),
     .out_o( hex_out )
   );
+
+  ps_2 ps_2(
+    .clk_50_i( clk_i ),
+    .rst_i( rst_i ),
+
+    .ps2_clk_i( ps2_clk_i ),
+    .ps2_dat_i( ps2_dat_i ),
+    .valid_data_o( valid_data_o ),
+    .data_o()
+  ); 
 
   always_comb
     case( RDsel )
