@@ -15,7 +15,6 @@ module hex_ctrl(
   logic [15:0] displayed_number;
   logic [15:0] displayed_number_masked;
 
-  logic [15:0] mask;
   logic [3:0]  an_enable;
 
   logic [15:0] displayed_number_selected;
@@ -24,6 +23,8 @@ module hex_ctrl(
 
   logic [26:0] one_second_counter; // counter for generating 1 second clock enable
   logic        one_second_enable;// one second enable for counting numbers
+
+  logic [7:0]  reset;
 
   always_ff @( posedge clk_i or posedge rst_i )
     if( rst_i ) 
@@ -80,7 +81,9 @@ module hex_ctrl(
 
   always_ff @( posedge clk_i or posedge rst_i )
     if( rst_i )
-      displayed_number          <= 0;
+      displayed_number          <= { 16 { 1'b0 } };
+    else if( reset )
+      displayed_number          <= 16'h0000;
     else if( we_i && addr_i[3] == 0 ) begin
       if( be_i[0] )
         displayed_number[3:0]   <= wdata_i[3:0];
@@ -94,31 +97,37 @@ module hex_ctrl(
 
   always_ff @( posedge clk_i or posedge rst_i )
     if( rst_i )
-      mask        <= 0;
+      displayed_number_masked        <= 0;
     else begin
-      mask[3:0]   <= ( !an_enable[0] && selection != 0 ) ? ( { 4 { 1'b1 } } ) : ( { 4 { 1'b0 } } );
-      mask[7:4]   <= ( !an_enable[1] && selection != 1 ) ? ( { 4 { 1'b1 } } ) : ( { 4 { 1'b0 } } );
-      mask[11:8]  <= ( !an_enable[2] && selection != 2 ) ? ( { 4 { 1'b1 } } ) : ( { 4 { 1'b0 } } );
-      mask[15:12] <= ( !an_enable[3] && selection != 3 ) ? ( { 4 { 1'b1 } } ) : ( { 4 { 1'b0 } } );
+      displayed_number_masked[3:0]   <= ( !an_enable[0] && selection != 0 ) ? ( 4'hF ) : ( displayed_number[3:0] );
+      displayed_number_masked[7:4]   <= ( !an_enable[1] && selection != 1 ) ? ( 4'hF ) : ( displayed_number[7:4] );
+      displayed_number_masked[11:8]  <= ( !an_enable[2] && selection != 2 ) ? ( 4'hF ) : ( displayed_number[11:8] );
+      displayed_number_masked[15:12] <= ( !an_enable[3] && selection != 3 ) ? ( 4'hF ) : ( displayed_number[15:12] );
     end
 
   always_ff @( posedge clk_i or posedge rst_i )
     if( rst_i )
-      displayed_number_masked <= 0;
-    else
-      displayed_number_masked <= displayed_number | mask;
-
-  always_ff @( posedge clk_i or posedge rst_i )
-    if( rst_i )
       an_enable <= 0;
+    else if( reset )
+      an_enable <= 4'hF;
     else if( we_i && addr_i[3] == 1 && be_i[0] == 1 )
       an_enable <= wdata_i[3:0];
 
   always_ff @( posedge clk_i or posedge rst_i )
     if( rst_i )
       selection <= 0;
+    else if( reset )
+      selection <= 8'hFF;
     else if( we_i && addr_i[3] == 1 && be_i[1] == 1 ) 
-      selection <= wdata_i[3:0];
+      selection <= wdata_i[7:0];
+
+  always_ff @( posedge clk_i or posedge rst_i )
+    if( rst_i )
+      reset <= { 8 { 1'b0 } };
+    else if( we_i && addr_i[3] == 1 && be_i[2] == 1 )
+      reset <= wdata_i[7:0];
+    else 
+      reset <= { 8 { 1'b0 } };
 
   Seven_segment_LED_Display_Controller Seven_segment_LED_Display_Controller(
     .clock_100Mhz( clk_i ), // 100 Mhz clock source on Basys 3 FPGA
