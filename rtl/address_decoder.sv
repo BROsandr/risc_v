@@ -19,10 +19,12 @@ module address_decoder #(
   logic  data_mem_valid;
   logic  is_leds_addr;
   logic  is_hex_addr;
+  logic  is_sw_addr;
 
-  assign is_leds_addr = { addr_i[31:2], 2'b0 } == 32'h80000800;
+  assign is_leds_addr = { addr_i[31:2], 2'b0 } == 32'h80000000;
   assign is_hex_addr  = { addr_i[31:4], 4'b0 } == 32'h80001000;
   assign is_ps2_addr  = { addr_i[31:2], 2'b0 } == 32'h80003000;
+  assign is_sw_addr   = { addr_i[31:2], 2'b0 } == 32'h80002000;
 
   assign data_mem_valid   = ( addr_i >= RAM_SIZE ) ?  ( 1'b0 ) : ( 1'b1 );
 
@@ -41,6 +43,8 @@ module address_decoder #(
       RDsel_o = `RDSEL_HEX;
     else if( is_ps2_addr )
       RDsel_o = `RDSEL_PS2;
+    else if( is_sw_addr )
+      RDsel_o = `RDSEL_SW;
     else
       RDsel_o = `RDSEL_MEM;
 
