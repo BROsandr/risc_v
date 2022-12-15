@@ -22,7 +22,7 @@ module miriscv_top
   output valid_data_o
 );
 
-  localparam     RDSEL_WIDTH = 2;
+  localparam     RDSEL_WIDTH = 8;
 
   logic          rst;
   assign         rst = !rst_n_i;
