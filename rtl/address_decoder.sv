@@ -22,7 +22,7 @@ module address_decoder #(
 
   assign is_leds_addr = { addr_i[31:2], 2'b0 } == 32'h80000800;
   assign is_hex_addr  = { addr_i[31:4], 4'b0 } == 32'h80001000;
-  assign is_ps2_addr  = { addr_i[31:2], 4'b0 } == 32'h80003000;
+  assign is_ps2_addr  = { addr_i[31:2], 2'b0 } == 32'h80003000;
 
   assign data_mem_valid   = ( addr_i >= RAM_SIZE ) ?  ( 1'b0 ) : ( 1'b1 );
 
