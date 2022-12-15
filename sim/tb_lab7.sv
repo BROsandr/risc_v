@@ -27,7 +27,8 @@ module tb_lab7();
     .rst_n_i        ( rst_n              ),
     .leds_out_o( leds_out ),
     .seg_o( seg ),
-    .an_o( an )
+    .an_o( an ),
+    .sw_i( 16'h1111 )
 //    .int_req_i      ( int_req            ),
 //    .int_fin_o      ( int_fin            )
   );
