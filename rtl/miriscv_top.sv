@@ -57,10 +57,12 @@ module miriscv_top
   logic  [31:0]              rdata;
 
   logic                      we_hex;
+  logic                      we_ps2;
 
   logic                      valid_addr;
 
   logic  [31:0]              leds_out;
+  logic  [31:0]              ps2_out;
 
   assign                     leds_out_o = leds_out[15:0];
 
@@ -133,6 +135,7 @@ module miriscv_top
     .addr_i( data_addr_core ),
     .we_leds_o( we_leds ),
     .we_hex_o ( we_hex ),
+    .we_ps2_o ( we_ps2 ),
     .we_m_o( data_we_ram ),
     .req_m_o( data_req_ram ),
     .RDsel_o( RDsel )
@@ -172,7 +175,7 @@ module miriscv_top
     .ps2_clk_i( ps2_clk_i ),
     .ps2_dat_i( ps2_dat_i ),
     .valid_data_o( valid_data_o ),
-    .data_o()
+    .data_o( ps2_out )
   ); 
 
   always_comb
@@ -180,6 +183,7 @@ module miriscv_top
       `RDSEL_MEM   : rdata = data_rdata_ram;
       `RDSEL_LEDS  : rdata = leds_out_o;
       `RDSEL_HEX   : rdata = hex_out;
+      `RDSEL_PS2   : rdata = ps2_out;
 
       default:       rdata = 32'bx;
     endcase
