@@ -49,7 +49,7 @@ module ps_2 (
       endcase
 
   logic [8:0] shift_reg;
-  assign      data = shift_reg[7:0];
+  assign      data_o = shift_reg[7:0];
 
   always_ff @( posedge clk_50_i or posedge rst_i )
   if( rst_i )
