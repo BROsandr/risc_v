@@ -19,7 +19,9 @@ module miriscv_top
 
   input ps2_clk_i,
   input ps2_dat_i,
-  output valid_data_o
+  output valid_data_o,
+
+  input [15:0]         sw_i
 );
 
   localparam     RDSEL_WIDTH = 8;
@@ -58,11 +60,13 @@ module miriscv_top
 
   logic                      we_hex;
   logic                      we_ps2;
+  logic                      we_sw;
 
   logic                      valid_addr;
 
   logic  [31:0]              leds_out;
   logic  [31:0]              ps2_out;
+  logic  [31:0]              sw_out;
 
   assign                     leds_out_o = leds_out[15:0];
 
@@ -154,6 +158,14 @@ module miriscv_top
     .out_o( leds_out )
   );
 
+  sw_ctrl sw_ctrl(
+    .clk_i( clk_i ),
+    .rst_i( rst ),
+
+    .in_i( sw_i ),
+    .out_o( sw_out )
+  );
+
   hex_ctrl hex_ctrl(
     .clk_i( clk_i ),
     .rst_i( rst ),
@@ -184,6 +196,7 @@ module miriscv_top
       `RDSEL_LEDS  : rdata = leds_out_o;
       `RDSEL_HEX   : rdata = hex_out;
       `RDSEL_PS2   : rdata = ps2_out;
+      `RDSEL_SW    : rdata = sw_out;
 
       default:       rdata = 32'bx;
     endcase
