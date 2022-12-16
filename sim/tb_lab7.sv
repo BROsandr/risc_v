@@ -18,6 +18,7 @@ module tb_lab7();
   logic [6:0] seg;
   logic [3:0] an;
   logic [15:0] leds_out;
+  logic [15:0]         sw;
   
   miriscv_top #(
     .RAM_SIZE       ( RAM_SIZE           ),
@@ -28,9 +29,7 @@ module tb_lab7();
     .leds_out_o( leds_out ),
     .seg_o( seg ),
     .an_o( an ),
-    .sw_i( 16'h1111 )
-//    .int_req_i      ( int_req            ),
-//    .int_fin_o      ( int_fin            )
+    .sw_i( sw )
   );
 
   
@@ -52,8 +51,19 @@ module tb_lab7();
       @( posedge clk );
       reset; 
       @( posedge clk ); 
+
+      sw <= 16'h1111;
       
-      #200000000;
+      #20000;
+      sw <= 16'h1110;
+      #20000;
+      sw <= 16'h1111;
+      #20000;
+      sw <= 16'h1111;
+      #20000;
+      sw <= 16'h1011;
+      #20000;
+      
       $finish;
     end
 
