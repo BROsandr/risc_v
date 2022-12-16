@@ -9,9 +9,6 @@ module miriscv_top
   // clock, reset
   input                clk_i,
   input                rst_n_i,
-//  input  logic  [31:0] int_req_i,
-//  output logic  [31:0] int_fin_o,
-
 
   output [14:0]        leds_out_o,
   output [6:0 ]        seg_o,
@@ -68,6 +65,11 @@ module miriscv_top
   logic  [31:0]              ps2_out;
   logic  [31:0]              sw_out;
 
+  logic  [31:0]              int_req;
+  logic  [31:0]              int_fin;
+
+  assign                     int_req[31:1] = 0;
+
   assign                     leds_out_o = leds_out[15:0];
 
   assign valid_addr       = ( data_addr_core < RAM_SIZE ) || 
@@ -121,12 +123,12 @@ module miriscv_top
   interrupt_controller interrupt_controller(
     .clk_i( clk_i ),
     .rst_i( rst ),
-    .int_req_i( int_req_i ),
+    .int_req_i( int_req ),
     .mie_i( mie ),
     .INT_RST_i( INT_RST ),
 
     .INT_o( interrupt ),
-    .int_fin_o( int_fin_o ),
+    .int_fin_o( int_fin ),
     .mcause_o( mcause )
   );
 
@@ -163,7 +165,9 @@ module miriscv_top
     .rst_i( rst ),
 
     .in_i( sw_i ),
-    .out_o( sw_out )
+    .out_o( sw_out ),
+    .int_req_o( int_req ),
+    .int_fin_i( int_fin )
   );
 
   hex_ctrl hex_ctrl(
