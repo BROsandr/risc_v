@@ -1,9 +1,9 @@
 module debouncing(
-  input        clk_i,
-  input        rst_i,
-  input        button_i,
-  output logic out_o
-);
+    input clock,
+    input reset,
+    input button,
+    output reg out
+    );
 
 localparam N = 19;        //for a 10ms tick
 
