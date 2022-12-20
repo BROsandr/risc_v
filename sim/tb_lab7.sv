@@ -20,6 +20,8 @@ module tb_lab7();
   logic [15:0] leds_out;
   logic [15:0]         sw;
   
+  logic error;
+  
   miriscv_top #(
     .RAM_SIZE       ( RAM_SIZE           ),
     .RAM_INIT_FILE  ( "prog.txt"         )
@@ -29,12 +31,14 @@ module tb_lab7();
     .leds_out_o( leds_out ),
     .seg_o( seg ),
     .an_o( an ),
+    .error_o( error ),
     .sw_i( sw )
   );
-
   
   always
     #( CLK_PERIOD / 2 ) clk <= !clk;
+  
+  assign dut.int_req[31:1] = 0;
   
   task reset;
     rst_n <= 1;
@@ -46,26 +50,26 @@ module tb_lab7();
     
   initial
     begin
-      for( int i = 0; i < 32; ++i ) 
-        int_req[i] <= 0;
+//      for( int i = 0; i < 32; ++i ) 
+//        dut.int_req[i] <= 0;
       @( posedge clk );
       reset; 
       @( posedge clk ); 
 
       // sw <= 16'h1111;
       
-      // #20000;
-      // sw <= 16'h1110;
-      // #20000;
-      // sw <= 16'h1111;
-      // #20000;
-      // sw <= 16'h1111;
-      // #20000;
-      // sw <= 16'h1011;
-      // #2;
-      // sw <= 16'h1111;
-      // #20000;
-      #2000000;
+      #20000;
+      sw <= 16'h1110;
+      #20000;
+      sw <= 16'h1111;
+      #20000;
+      sw <= 16'h1111;
+      #20000;
+      #2;
+      sw <= 16'h1011;
+      #2;
+      sw <= 16'h1111;
+      #20000;
       
       $finish;
     end
