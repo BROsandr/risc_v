@@ -16,15 +16,17 @@ module miriscv_top
 
   input ps2_clk_i,
   input ps2_dat_i,
-  output valid_data_o,
 
-  input [15:0]         sw_i
+  input [15:0]         sw_i,
+  output error_o
 );
 
   localparam     RDSEL_WIDTH = 8;
 
   logic          rst;
   assign         rst = !rst_n_i;
+
+  logic valid_data_o;
 
   logic  [31:0]  instr_rdata_core;
   logic  [31:0]  instr_addr_core;
@@ -68,7 +70,7 @@ module miriscv_top
   logic  [31:0]              int_req;
   logic  [31:0]              int_fin;
 
-  assign                     int_req[31:1] = 0;
+//  assign                     int_req[31:1] = 0;
 
   assign                     leds_out_o = leds_out[15:0];
 
@@ -167,7 +169,8 @@ module miriscv_top
     .in_i( sw_i ),
     .out_o( sw_out ),
     .int_req_o( int_req ),
-    .int_fin_i( int_fin )
+    .int_fin_i( int_fin ),
+    .error_o( error_o )
   );
 
   hex_ctrl hex_ctrl(
