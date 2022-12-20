@@ -131,8 +131,8 @@ module hex_ctrl(
   //     reset <= { 8 { 1'b0 } };
 
   Seven_segment_LED_Display_Controller Seven_segment_LED_Display_Controller(
-    .clock_100Mhz( clk_i ), // 100 Mhz clock source on Basys 3 FPGA
-    .reset( rst_i ), // reset
+    .clk_i( clk_i ), // 100 Mhz clock source on Basys 3 FPGA
+    .rst_i( rst_i ), // reset
     // .displayed_number_i( displayed_number_selected ),
     .displayed_number_i( displayed_number ),
     

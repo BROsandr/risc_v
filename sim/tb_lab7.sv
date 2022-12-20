@@ -56,7 +56,7 @@ module tb_lab7();
       reset; 
       @( posedge clk ); 
 
-      // sw <= 16'h1111;
+      sw <= 16'h1111;
       
       #20000;
       sw <= 16'h1110;
