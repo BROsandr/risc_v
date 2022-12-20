@@ -20,9 +20,7 @@ module interrupt_controller(
 
   logic        int_reg;
 
-  always_comb
-    for( int i = 0; i < 32; ++i )
-      interrupt_counter_decoded[i] = ( interrupt_counter == i ) ? ( 1 ) : ( 0 );
+  assign                                interrupt_counter_decoded = { 31'b0, 1'b1 } << interrupt_counter;
 
   always_comb
     for( int i = 0; i < 32; ++i )
