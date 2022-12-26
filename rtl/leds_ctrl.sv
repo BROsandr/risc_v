@@ -1,13 +1,13 @@
 module leds_ctrl(
-  input               clk_i,
-  input               rst_i,
+  (* mark_debug = "true" *)input               clk_i,
+  (* mark_debug = "true" *)input               rst_i,
 
-  input  logic [31:0] wdata_i,
-  input  logic [31:0] addr_i,
-  input  logic [3:0]  be_i,
-  input  logic        we_i,
+  (* mark_debug = "true" *)input  logic [31:0] wdata_i,
+  (* mark_debug = "true" *)input  logic [31:0] addr_i,
+  (* mark_debug = "true" *)input  logic [3:0]  be_i,
+  (* mark_debug = "true" *)input  logic        we_i,
 
-  output logic [31:0] out_o
+  (* mark_debug = "true" *)output logic [31:0] out_o
 );
 
   always_ff @( posedge clk_i or posedge rst_i )

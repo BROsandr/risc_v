@@ -5,7 +5,7 @@ module debouncing(
     output reg out
     );
 
-localparam N = 19;        //for a 10ms tick
+localparam N = 6;        //for a 10ms tick
 
 reg [N-1:0]count;
 wire tick;

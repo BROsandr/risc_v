@@ -4,22 +4,22 @@ module address_decoder #(
   parameter RDSEL_WIDTH = 2,
   parameter RAM_SIZE    = 256 // bytes
 )(
-  input  logic                 we_i,
-  input  logic                 req_i,
-  input  logic [31:0]          addr_i,
+  (* mark_debug = "true" *)input  logic                 we_i,
+  (* mark_debug = "true" *)input  logic                 req_i,
+  (* mark_debug = "true" *)input  logic [31:0]          addr_i,
 
-  output logic                 we_leds_o,
-  output logic                 we_hex_o,
-  output logic                 we_ps2_o,
+  (* mark_debug = "true" *)output logic                 we_leds_o,
+  (* mark_debug = "true" *)output logic                 we_hex_o,
+  (* mark_debug = "true" *)output logic                 we_ps2_o,
   output logic                 we_m_o,
-  output logic                 req_m_o,
-  output logic [RDSEL_WIDTH-1:0] RDsel_o
+  (* mark_debug = "true" *)output logic                 req_m_o,
+  (* mark_debug = "true" *)output logic [RDSEL_WIDTH-1:0] RDsel_o
 );
 
-  logic  data_mem_valid;
-  logic  is_leds_addr;
-  logic  is_hex_addr;
-  logic  is_sw_addr;
+  (* mark_debug = "true" *)logic  data_mem_valid;
+  (* mark_debug = "true" *)logic  is_leds_addr;
+  (* mark_debug = "true" *)logic  is_hex_addr;
+  (* mark_debug = "true" *)logic  is_sw_addr;
 
   assign is_leds_addr = { addr_i[31:2], 2'b0 } == 32'h80000000;
   assign is_hex_addr  = { addr_i[31:4], 4'b0 } == 32'h80001000;

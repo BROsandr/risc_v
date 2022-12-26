@@ -1,24 +1,24 @@
 module interrupt_controller(
   input               clk_i,
   input               rst_i,
-  input        [31:0] int_req_i,
-  input        [31:0] mie_i,
-  input               INT_RST_i,
+  (* mark_debug = "true" *)input        [31:0] int_req_i,
+  (* mark_debug = "true" *)input        [31:0] mie_i,
+  (* mark_debug = "true" *)input               INT_RST_i,
 
-  output              INT_o,
-  output logic [31:0] int_fin_o,
-  output       [31:0] mcause_o
+  (* mark_debug = "true" *)output              INT_o,
+  (* mark_debug = "true" *)output logic [31:0] int_fin_o,
+  (* mark_debug = "true" *)output       [31:0] mcause_o
 );
 
-  logic [4:0]  interrupt_counter;
-  logic [31:0] interrupt_counter_decoded;
+  (* mark_debug = "true" *)logic [4:0]  interrupt_counter;
+  (* mark_debug = "true" *)logic [31:0] interrupt_counter_decoded;
 
-  logic [31:0] int_befor_or;
+  (* mark_debug = "true" *)logic [31:0] int_befor_or;
 
-  logic        int_or;
+  (* mark_debug = "true" *)logic        int_or;
   assign       int_or = |int_befor_or;
 
-  logic        int_reg;
+  (* mark_debug = "true" *)logic        int_reg;
 
   assign                                interrupt_counter_decoded = { 31'b0, 1'b1 } << interrupt_counter;
 

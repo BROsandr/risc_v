@@ -70,6 +70,12 @@ module tb_lab7();
       #2;
       sw <= 16'h1111;
       #20000;
+
+      for( int i = 0; i < 100; ++i ) begin
+      sw <= $urandom;
+      #( $urandom );
+      end
+
       
       $finish;
     end

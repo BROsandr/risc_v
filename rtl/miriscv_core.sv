@@ -30,7 +30,7 @@ module miriscv_core(
   logic [31:0] instr;
   assign       instr        = RD;
   
-  logic [31:0] Result;
+  (* mark_debug = "true" *)logic [31:0] Result;
   
   logic        comp;
   
@@ -66,7 +66,7 @@ module miriscv_core(
   
   logic [31:0] RD_mem;
   
-  logic [31:0] PC;
+  (* mark_debug = "true" *)logic [31:0] PC;
   assign       instr_addr_o = PC;
   
   logic [31:0] add_to_PC;
