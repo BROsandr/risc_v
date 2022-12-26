@@ -28,14 +28,6 @@ module sw_ctrl(
     else
       in_curr <= in_debounced;
 
-
-
-  always_ff @( posedge clk_i or posedge rst_i )
-    if( rst_i )
-      in_curr <= 0;
-    else
-      in_curr <= in_debounced;
-
   always_ff @( posedge clk_i or posedge rst_i )
     if( rst_i )
       in_prev <= 0;
