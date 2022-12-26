@@ -22,6 +22,19 @@ module sw_ctrl(
 
   assign        out_o[15:0]  = in_debounced;
 
+genvar i;
+generate
+  for( i = 0; i < 16; ++i )
+    debouncing debouncing(
+      .clock( clk_i ),
+      .reset( rst_i ),
+      .button( in_i[i] ),
+      .out( in_debounced[i] )
+    );
+endgenerate
+
+
+
   always_ff @( posedge clk_i or posedge rst_i )
     if( rst_i )
       in_curr <= 0;
